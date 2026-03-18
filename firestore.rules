@@ -1,0 +1,215 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Segédfüggvények
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getRole() {
+      return request.auth.token.role;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.role == 'admin';
+    }
+
+    function isTeacher() {
+      return isAuthenticated() && 
+        (request.auth.token.role == 'teacher' || 
+         request.auth.token.role == 'homeroom_teacher');
+    }
+
+    function isStudent() {
+      return isAuthenticated() && 
+        (request.auth.token.role == 'student' || 
+         request.auth.token.role == 'dj');
+    }
+
+    function isDJ() {
+      return isAuthenticated() && request.auth.token.role == 'dj';
+    }
+
+    function isParent() {
+      return isAuthenticated() && request.auth.token.role == 'parent';
+    }
+
+    function isPrincipal() {
+      return isAuthenticated() && request.auth.token.role == 'principal';
+    }
+
+    function isAdminOrPrincipal() {
+      return isAdmin() || isPrincipal();
+    }
+
+    function isValidRole(role) {
+      return role in ['admin', 'teacher', 'homeroom_teacher', 'student', 'dj', 'parent', 'principal'];
+    }
+
+    function isValidGrade(grade) {
+      return grade is int && grade >= 1 && grade <= 5;
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.size() > 0 && email.matches('.*@.*');
+    }
+
+    // Optimalizált felhasználók
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == userId &&
+                       isValidRole(request.resource.data.role) &&
+                       isValidEmail(request.resource.data.email);
+      allow update: if (isAuthenticated() && request.auth.uid == userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Optimalizált órák - indexelt mezők
+    match /lessons/{lessonId} {
+      allow read: if isAuthenticated();
+      allow create: if isTeacher() &&
+                       request.resource.data.keys().hasAll(['day', 'startTime', 'subject', 'teacherName', 'className']);
+      allow update: if (isTeacher() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow delete: if (isTeacher() && resource.data.userId == request.auth.uid) || isAdmin();
+    }
+
+    // Optimalizált jegyek - batch íráshoz
+    match /grades/{gradeId} {
+      allow read: if isAuthenticated();
+      allow create: if isTeacher() &&
+                       isValidGrade(request.resource.data.grade) &&
+                       request.resource.data.keys().hasAll(['studentName', 'subject', 'title', 'teacherName']);
+      allow update: if isTeacher() && resource.data.teacherName == request.auth.token.name;
+      allow delete: if isAdmin();
+    }
+
+    // Házi feladatok - cache-friendly
+    match /homework/{homeworkId} {
+      allow read: if isAuthenticated();
+      allow create: if isTeacher() &&
+                       request.resource.data.teacherId == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['title', 'description', 'dueDate', 'className']);
+      allow update: if (isTeacher() && resource.data.teacherId == request.auth.uid) || isAdmin();
+      allow delete: if (isTeacher() && resource.data.teacherId == request.auth.uid) || isAdmin();
+    }
+
+    // Házi beadások
+    match /homework-submissions/{submissionId} {
+      allow read: if isAuthenticated();
+      allow create: if isStudent() &&
+                       request.resource.data.studentId == request.auth.uid;
+      allow update: if (isStudent() && resource.data.studentId == request.auth.uid) ||
+                       isTeacher() || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Jelenlét - batch optimalizált
+    match /attendance/{attendanceId} {
+      allow read: if isAuthenticated();
+      allow create: if isTeacher() &&
+                       request.resource.data.teacherId == request.auth.uid;
+      allow update: if (isTeacher() && resource.data.teacherId == request.auth.uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Mulasztások
+    match /absences/{absenceId} {
+      allow read: if isAuthenticated();
+      allow create: if isTeacher() && request.resource.data.teacherId == request.auth.uid;
+      allow update: if isTeacher() || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Igazolások
+    match /excuses/{excuseId} {
+      allow read: if isTeacher() || isAdmin() || isPrincipal() || isParent();
+      allow create: if isParent() && request.resource.data.parentId == request.auth.uid;
+      allow update: if isTeacher() || isAdmin() || isPrincipal();
+      allow delete: if isTeacher() || isAdmin() || isPrincipal();
+    }
+
+    // Chat üzenetek - rate limited
+    match /chatMessages/{messageId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() &&
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.message is string &&
+                       request.resource.data.message.size() > 0 &&
+                       request.resource.data.message.size() <= 500;
+      allow update: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow delete: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+    }
+
+    // Zene kérések - optimalizált
+    match /musicRequests/{requestId} {
+      allow read: if isAuthenticated();
+      allow create: if isStudent() &&
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.url is string &&
+                       request.resource.data.url.size() <= 500;
+      allow update: if isDJ() || isAdmin();
+      allow delete: if isDJ() || isAdmin();
+    }
+
+    // Órarend változások
+    match /scheduleChanges/{changeId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Hozzáférés naplók
+    match /access/{accessId} {
+      allow read: if isAdmin() || isPrincipal();
+      allow create: if isAuthenticated();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Szülő-gyermek kapcsolatok
+    match /parent_children/{docId} {
+      allow read: if isAuthenticated() && 
+                     (request.auth.uid == resource.data.parentId || 
+                      request.auth.uid == resource.data.childId ||
+                      isAdmin());
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Igazgatói dicseretek/intések
+    match /principalRewards/{rewardId} {
+      allow read: if isAuthenticated();
+      allow create: if isPrincipal() &&
+                       request.resource.data.principalId == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['studentId', 'type', 'reason', 'date']);
+      allow update: if isPrincipal() && resource.data.principalId == request.auth.uid;
+      allow delete: if isPrincipal() && resource.data.principalId == request.auth.uid;
+    }
+
+    // Tanári dicseretek/figyelmeztetések
+    match /teacherRewards/{rewardId} {
+      allow read: if isAuthenticated();
+      allow create: if isTeacher() &&
+                       request.resource.data.teacherId == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['studentId', 'type', 'reason', 'date']);
+      allow update: if isTeacher() && resource.data.teacherId == request.auth.uid;
+      allow delete: if isTeacher() && resource.data.teacherId == request.auth.uid;
+    }
+
+    // Viselkedési bejegyzések (behavior_records)
+    match /behavior_records/{recordId} {
+      allow read: if isAuthenticated();
+      allow create: if (isTeacher() || isPrincipal()) &&
+                       request.resource.data.recordedBy == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['studentId', 'type', 'level', 'description']);
+      allow update: if (isTeacher() && resource.data.recordedBy == request.auth.uid) ||
+                       (isPrincipal() && resource.data.recordedBy == request.auth.uid) ||
+                       isAdmin();
+      allow delete: if isAdmin();
+    }
+  }
+}

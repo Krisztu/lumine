@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Modern Light Theme - Crisp & Airy */
+    --background: 210 40% 98%;
+    --foreground: 224 71% 4%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+ 
+    --primary: 262 83% 58%; /* Vivid Purple */
+    --primary-foreground: 210 40% 98%;
+ 
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220.9 39.3% 11%;
+ 
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 8.9% 46.1%;
+ 
+    --accent: 262 83% 96%;
+    --accent-foreground: 262 83% 58%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 262 83% 58%;
+ 
+    --radius: 1rem;
+
+    --font-sans: 'Outfit', 'Inter', sans-serif;
+  }
+ 
+  .dark {
+    /* Modern Dark Theme - Deep & Neon */
+    --background: 224 71% 4%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 224 71% 4%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 224 71% 4%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 263 70% 50%; /* Deep Purple */
+    --primary-foreground: 210 40% 98%;
+ 
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+ 
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 263 70% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/30 selection:text-primary;
+    background-attachment: fixed;
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
+  }
+
+  /* Light Mode Background - Aurora */
+  body {
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(253,16%,90%,1) 0, transparent 50%), 
+      radial-gradient(at 50% 0%, hsla(225,39%,90%,1) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, hsla(339,49%,90%,1) 0, transparent 50%),
+      linear-gradient(to bottom right, #ffffff, #f0f4ff);
+  }
+
+  /* Dark Mode Background - Deep Space */
+  .dark body {
+    background-image: 
+      radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.15), transparent 25%), 
+      radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.15), transparent 25%), 
+      linear-gradient(to bottom right, #020617, #0f172a);
+  }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glassmorphism Utilities */
+@layer utilities {
+  .glass {
+    @apply bg-white/70 dark:bg-black/40 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-xl;
+  }
+  
+  .glass-card {
+    @apply bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-lg rounded-2xl transition-all duration-300 hover:bg-white/60 dark:hover:bg-white/10 hover:shadow-2xl hover:-translate-y-1 hover:border-primary/30;
+  }
+
+  .glass-panel {
+    @apply bg-white/30 dark:bg-black/30 backdrop-blur-2xl border border-white/20 dark:border-white/5 shadow-2xl;
+  }
+
+  .glass-input {
+    @apply bg-white/50 dark:bg-black/20 border-white/30 dark:border-white/10 focus:bg-white/80 dark:focus:bg-black/40 focus:ring-2 focus:ring-primary/50 transition-all duration-200 backdrop-blur-sm;
+  }
+
+  .glass-button {
+    @apply bg-primary/90 hover:bg-primary text-white shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 backdrop-blur-sm border border-white/10;
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600 dark:from-purple-400 dark:to-blue-400;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300/50 dark:bg-slate-700/50 rounded-full backdrop-blur-sm;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/50;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  transition: background-color 0.5s ease, color 0.3s ease;
+}
+
+/* Hide scrollbar for mobile tabs */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .glass-card {
+    @apply rounded-xl;
+  }
+  
+  /* Touch targets */
+  button, input, select, textarea {
+    min-height: 44px;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px;
+  }
+  
+  /* Better text wrapping */
+  .break-words {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  /* Improved table scrolling */
+  .table-container {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Modal improvements */
+  .modal-content {
+    max-height: 85vh;
+    margin: 1rem;
+  }
+}

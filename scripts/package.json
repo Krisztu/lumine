@@ -1,0 +1,18 @@
+{
+  "name": "lumine-scripts",
+  "version": "1.0.0",
+  "description": "Luminé adatbázis inicializáló script-ek",
+  "scripts": {
+    "init-db": "node test-adatbazis.js",
+    "test-connection": "node test-firebase-connection.js",
+    "setup-test-db": "node scripts/create-test-db.js",
+    "clear-test-db": "node scripts/clear-test-db.js",
+    "create-admin": "node scripts/create-admin-only.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0",
+    "node-fetch": "^2.6.7"
+  }
+}
