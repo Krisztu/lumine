@@ -16,7 +16,9 @@ function getCachedData(key: string, duration: number = LESSONS_CACHE_DURATION) {
 function setCachedData(key: string, data: any) {
   if (memoryCache.size > 30) {
     const oldestKey = memoryCache.keys().next().value
-    memoryCache.delete(oldestKey)
+    if (oldestKey !== undefined) {
+      memoryCache.delete(oldestKey)
+    }
   }
   
   memoryCache.set(key, {
