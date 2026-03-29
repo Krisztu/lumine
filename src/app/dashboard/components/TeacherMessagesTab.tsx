@@ -19,8 +19,8 @@ interface TeacherMessagesTabProps {
 export function TeacherMessagesTab({ messages }: TeacherMessagesTabProps) {
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'szaktanári': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
-      case 'osztályfőnöki': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400'
+      case 'szaktanári': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400'
+      case 'osztályfőnöki': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400'
       case 'igazgatói': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
       default: return 'bg-gray-100 text-gray-800'
     }

@@ -3,8 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import { Badge } from '@/shared/components/ui/badge'
 import { Button } from '@/shared/components/ui/button'
-import { ClipboardList } from 'lucide-react'
-
 interface AttendanceTabProps {
   attendance: any[]
   expandedDates: Record<string, boolean>
@@ -60,7 +58,7 @@ export function AttendanceTab({
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge className="bg-blue-500 text-white">
+                        <Badge className="bg-emerald-500 text-white">
                           {records.length}
                         </Badge>
                         <span className="text-gray-400">

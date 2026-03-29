@@ -6,7 +6,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/shared/components/ui/badge'
 import { Button } from '@/shared/components/ui/button'
 import { Textarea } from '@/shared/components/ui/textarea'
-import { Calendar, BookOpen, Users, AlertCircle, Star, Heart, Award, Send } from 'lucide-react'
 import { getGradesBySubject, calculateAverage, ALL_SUBJECTS } from '@/lib/gradeUtils'
 import { ChartModal } from './ChartModal'
 import { ParentHomeworkTab } from './ParentHomeworkTab'
@@ -340,14 +339,14 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
           <Card className="lg:col-span-1">
             <CardHeader className="p-3 sm:p-6">
               <CardTitle className="flex items-center text-sm sm:text-lg">
-                <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                
                 Átlagok
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 sm:p-6">
               <div className="space-y-4">
-                <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
+                  <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
                     {academicAverage}
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Tantárgyi átlag</div>
@@ -399,7 +398,7 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
                       <button
                         onClick={() => setSelectedSubject(null)}
                         className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${selectedSubject === null
-                          ? 'bg-blue-500 text-white shadow-sm'
+                          ? 'bg-emerald-500 text-white shadow-sm'
                           : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
                           }`}
                       >
@@ -416,7 +415,7 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
                           key={subject}
                           onClick={() => setSelectedSubject(subject)}
                           className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${selectedSubject === subject
-                            ? 'bg-blue-500 text-white shadow-sm'
+                            ? 'bg-emerald-500 text-white shadow-sm'
                             : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
                             }`}
                         >
@@ -523,21 +522,21 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
         <div className="space-y-6">
           {loading && (
             <div className="text-center py-4">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
               <p className="mt-2 text-sm text-gray-600">Betöltés...</p>
             </div>
           )}
           <Card className="border-none shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center text-sm sm:text-lg">
-                <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-red-600" />
+                
                 <span className="text-xs sm:text-base">Igazolás küldése - {child?.childName}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {availableAbsences.length === 0 ? (
                 <div className="text-center py-8">
-                  <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  
                   <p className="text-gray-600 dark:text-gray-400 text-sm">
                     Nincs igazolandó hiányzás.
                   </p>
@@ -595,7 +594,7 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
               </div>
               
                   <Button onClick={submitExcuse} className="w-full" disabled={loading || selectedAbsences.length === 0}>
-                    <Send className="h-4 w-4 mr-2" />
+                    
                     {loading ? 'Küldés...' : 'Igazolás elküldése'}
                   </Button>
                 </>
@@ -606,7 +605,7 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
           <Card className="border-none shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center text-sm sm:text-lg">
-                <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-red-600" />
+                
                 <span className="text-xs sm:text-base">Összes mulasztás - {child?.childName}</span>
               </CardTitle>
             </CardHeader>
@@ -645,7 +644,7 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
           <Card className="border-none shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center text-sm sm:text-lg">
-                <Award className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-purple-600" />
+                
                 <span className="text-xs sm:text-base">Dicséret és figyelmeztetés - {child?.childName}</span>
               </CardTitle>
             </CardHeader>
@@ -684,7 +683,7 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <Award className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  
                   <p className="text-gray-600 dark:text-gray-400 text-sm">
                     Még nem került sor viselkedési bejegyzésre.
                   </p>
@@ -703,12 +702,12 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
         <Card className="border-none shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center text-sm sm:text-lg">
-              <Users className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-blue-600" />
+              
               <span className="text-xs sm:text-base">Gyermek profil</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg">
+            <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-emerald-50 to-emerald-50 dark:from-emerald-900/20 dark:to-emerald-900/20 rounded-lg">
               <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl font-bold overflow-hidden border-4 border-white/30 shadow-lg">
                 {child?.profileImage ? (
                   <img
@@ -717,7 +716,7 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-blue-600">
+                  <span className="text-emerald-600">
                     {(child?.childName || 'G').charAt(0).toUpperCase()}
                   </span>
                 )}
@@ -734,7 +733,7 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
           <Card className="border-none shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center text-sm sm:text-lg">
-                <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-green-600" />
+                
                 <span className="text-xs sm:text-base">Legutóbbi jegyek - {child?.childName}</span>
               </CardTitle>
             </CardHeader>
@@ -769,7 +768,7 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
           <Card className="border-none shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center text-sm sm:text-lg">
-                <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-red-600" />
+                
                 <span className="text-xs sm:text-base">Legutóbbi mulasztások - {child?.childName}</span>
               </CardTitle>
             </CardHeader>
@@ -808,8 +807,8 @@ export function ParentDashboard({ user, showAlert, defaultTab = 'overview' }: Pa
       <Card className="border-none shadow-sm">
         <CardContent className="pt-6 space-y-4">
           <p className="text-center text-gray-600 dark:text-gray-400">Még nincs hozzáadott gyermek.</p>
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-            <p className="text-sm text-blue-800 dark:text-blue-200">
+          <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
+            <p className="text-sm text-emerald-800 dark:text-emerald-200">
               Gyermek hozzáadásához lépjen az admin felhasználóhoz, és regisztrálja a diákot.
             </p>
           </div>

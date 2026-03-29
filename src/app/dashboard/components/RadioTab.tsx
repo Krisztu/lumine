@@ -3,7 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
-import { Music } from 'lucide-react'
 import { memo, useMemo, useCallback } from 'react'
 import { usePerformanceMonitor } from '@/lib/performanceMonitor'
 
@@ -37,7 +36,7 @@ const MusicRequestItem = memo(({ request, userRole, onDelete }: {
   return (
     <div className="glass-card rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
       <div className="flex flex-col sm:flex-row items-start sm:items-center p-4 sm:p-6 gap-4 sm:gap-6">
-        <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex-shrink-0 relative overflow-hidden">
+        <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex-shrink-0 relative overflow-hidden">
           {request.thumbnail ? (
             <img 
               src={request.thumbnail} 
@@ -48,7 +47,7 @@ const MusicRequestItem = memo(({ request, userRole, onDelete }: {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <Music className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              
             </div>
           )}
         </div>
@@ -172,7 +171,7 @@ export const RadioTab = memo(function RadioTab({
       <Card>
         <CardHeader className="p-3 sm:p-6">
           <CardTitle className="flex items-center text-sm sm:text-lg">
-            <Music className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+            
             Zene beküldése
           </CardTitle>
         </CardHeader>

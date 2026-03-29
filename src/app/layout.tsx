@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: 'Luminé - Oktatási Platform',
   description: 'Modern oktatási platform diákok és tanárok számára',
   icons: {
-    icon: '/favicon.svg',
+    icon: '/LuminéLogo.png',
   },
 }
 

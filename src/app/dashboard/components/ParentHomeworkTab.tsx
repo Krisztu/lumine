@@ -3,8 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import { Badge } from '@/shared/components/ui/badge'
 import { Button } from '@/shared/components/ui/button'
-import { FileText } from 'lucide-react'
-
 interface ParentHomeworkTabProps {
   homework: any[]
   homeworkSubmissions: any
@@ -26,7 +24,7 @@ export function ParentHomeworkTab({
         const isSubmitted = !!submission
 
         return (
-          <Card key={hw.id} className="border-l-4 border-blue-500 bg-white/5 hover:bg-white/10 transition-colors">
+          <Card key={hw.id} className="border-l-4 border-emerald-500 bg-white/5 hover:bg-white/10 transition-colors">
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -62,9 +60,9 @@ export function ParentHomeworkTab({
                       setSelectedHomework({...hw, submission})
                       setShowHomeworkModal(true)
                     }}
-                    className="border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-400"
+                    className="border-emerald-300 dark:border-emerald-600 text-emerald-700 dark:text-emerald-400"
                   >
-                    <FileText size={14} className="mr-1" />
+                    
                     Megtekintés
                   </Button>
                 </div>

@@ -1,12 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { GlassCard } from '@/shared/components/ui/glass-card'
 import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
 import { Button } from '@/shared/components/ui/button'
 import { LoadingScreen } from '@/shared/components/ui/loading-screen'
-import { GraduationCap, ArrowRight, Sparkles, Sun, Moon } from 'lucide-react'
+import { Mail, Lock, ArrowRight, Sun, Moon, Loader2 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 
@@ -23,19 +22,13 @@ export default function LoginPage() {
   useEffect(() => {
     setMounted(true)
     
-    // Sötét mód alapértelmezett beállítása
+    // Alapértelmezetten force dark mode a bejelentkező felületen a modern megjelenéshez
     try {
-      const savedDarkMode = localStorage.getItem('darkMode')
-      const isDark = savedDarkMode !== null ? savedDarkMode === 'true' : true
-      setDarkMode(isDark)
-      document.documentElement.classList.toggle('dark', isDark)
-      // Ha nincs mentés, akkor mentjük el az alapértelmezettet
-      if (savedDarkMode === null) {
-        localStorage.setItem('darkMode', 'true')
-      }
-    } catch (error) {
       setDarkMode(true)
       document.documentElement.classList.add('dark')
+      localStorage.setItem('darkMode', 'true')
+    } catch (error) {
+      // Ignored
     }
   }, [])
 
@@ -45,18 +38,11 @@ export default function LoginPage() {
     }
   }, [user, role, authLoading, router])
 
-  const toggleDarkMode = () => {
-    const newDarkMode = !darkMode
-    setDarkMode(newDarkMode)
-    document.documentElement.classList.toggle('dark', newDarkMode)
-    localStorage.setItem('darkMode', newDarkMode.toString())
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!email || !password) {
-      setError('Email és jelszó szükséges')
+      setError('A továbblépéshez add meg az email címed és a jelszavad.')
       return
     }
 
@@ -66,7 +52,7 @@ export default function LoginPage() {
     try {
       await signIn(email, password)
     } catch (error: any) {
-      setError(error.message || 'Bejelentkezési hiba történt')
+      setError(error.message || 'Hiba történt a bejelentkezés során. Próbáld újra.')
     } finally {
       setLoading(false)
     }
@@ -76,70 +62,72 @@ export default function LoginPage() {
     return <LoadingScreen message="Betöltés..." />
   }
 
-  // Ha a felhasználó be van jelentkezve, ne rendereljük a login oldalt
   if (user && role) {
     return <LoadingScreen message="Átirányítás..." />
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-4 relative overflow-hidden">
-      {/* Sötét/világos mód kapcsoló */}
-      {mounted && (
-        <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleDarkMode}
-            className="rounded-full hover:bg-white/10 w-8 h-8 sm:w-10 sm:h-10"
-          >
-            {darkMode ? <Sun className="h-4 w-4 sm:h-5 sm:w-5" /> : <Moon className="h-4 w-4 sm:h-5 sm:w-5" />}
-          </Button>
-        </div>
-      )}
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-primary/20 rounded-full blur-3xl -z-10 animate-pulse-slow" />
-      <div className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-blue-500/20 rounded-full blur-3xl -z-10 animate-pulse-slow" style={{ animationDelay: '1s' }} />
-
-      <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8 relative z-10">
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center p-2 sm:p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl mb-3 sm:mb-4 group hover:scale-110 transition-transform duration-300">
-            <GraduationCap className="h-8 w-8 sm:h-10 sm:w-10 text-primary group-hover:text-blue-500 transition-colors" />
+    <div className="min-h-screen flex text-foreground bg-[#050505] selection:bg-emerald-500/30">
+      
+      {/* Bal oldal - Bejelentkező form */}
+      <div className="w-full lg:w-[45%] flex flex-col justify-center px-8 sm:px-16 md:px-24 lg:px-32 relative z-10 bg-[#050505] border-r border-white/5 shadow-2xl">
+        <div className="w-full max-w-sm mx-auto space-y-10">
+          
+          <div className="space-y-2">
+            <img 
+              src="/LuminéLogo.png" 
+              alt="Luminé" 
+              className="h-10 w-auto mb-16 opacity-90"
+            />
+            <h1 className="text-4xl font-semibold tracking-tight text-white mb-2">Bejelentkezés</h1>
+            <p className="text-sm text-zinc-400">Békéscsabai SZC Nemes Tihamér Technikum</p>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-gradient pb-2">Luminé</h1>
-          <p className="text-sm sm:text-lg text-muted-foreground font-medium px-2 text-center">Békéscsabai SZC Nemes Tihamér Technikum</p>
-        </div>
 
-        <GlassCard variant="panel" className="border-t-white/40">
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground/80 font-medium ml-1 text-sm">Email cím</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="pelda@iskola.hu"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
-                required
-                className="glass-input h-10 sm:h-11 text-sm sm:text-base"
-              />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-3">
+              <Label htmlFor="email" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Email cím</Label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-500">
+                  <Mail className="h-4 w-4" />
+                </div>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="pelda@iskola.hu"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
+                  required
+                  className="pl-11 h-12 bg-zinc-900/50 border-zinc-800 text-white placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-emerald-500 focus-visible:border-emerald-500 rounded-lg transition-all"
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-foreground/80 font-medium ml-1 text-sm">Jelszó</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                required
-                minLength={6}
-                className="glass-input h-10 sm:h-11 text-sm sm:text-base"
-              />
+
+            <div className="space-y-3">
+              <Label htmlFor="password" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Jelszó</Label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-500">
+                  <Lock className="h-4 w-4" />
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  required
+                  className="pl-11 h-12 bg-zinc-900/50 border-zinc-800 text-white placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-emerald-500 focus-visible:border-emerald-500 rounded-lg transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-2">
+              {/* Ide jöhet egy emlékezz rám checkbox a jövőben */}
             </div>
 
             {(error || authError) && (
-              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs sm:text-sm text-center font-medium animate-shake">
+               <div className="text-red-400 text-sm font-medium">
                 {error || authError}
               </div>
             )}
@@ -147,23 +135,39 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-10 sm:h-12 text-sm sm:text-lg font-semibold glass-button mt-4 sm:mt-6 group"
+              className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition-all shadow-lg shadow-emerald-900/20"
             >
               {loading ? (
-                <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
-                <span className="flex items-center">
-                  Bejelentkezés
-                  <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
-                </span>
+                'Bejelentkezés'
               )}
             </Button>
           </form>
-        </GlassCard>
 
-        <p className="text-center text-xs sm:text-sm text-muted-foreground px-2">
-          &copy; {new Date().getFullYear()} Luminé Platform. Minden jog fenntartva.
-        </p>
+          <p className="text-xs text-zinc-500 pt-8">
+             &copy; {new Date().getFullYear()} Luminé Platform.
+          </p>
+        </div>
+      </div>
+
+      {/* Jobb oldal - Vizuális rész (desktopon) */}
+      <div className="hidden lg:flex lg:w-[55%] relative items-center justify-center overflow-hidden bg-[#0A0A0A]">
+        {/* Diszkrét, modern geometriai/absztrakt háttér sötét tónusokkal */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+          <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-emerald-500 opacity-[0.05] blur-[100px]"></div>
+        </div>
+        
+        <div className="relative z-10 max-w-lg p-12">
+          <h2 className="text-3xl font-light text-white leading-relaxed tracking-wide">
+            Egyszerű, határozott <br/>
+            <span className="font-medium text-emerald-400">interaktív bejelentkezés.</span>
+          </h2>
+          <p className="mt-6 text-zinc-400 font-light leading-relaxed">
+            Lépj be a Luminé oktatási platformba, ahol minden tananyagot és feladatot egy helyen érsz el.
+          </p>
+        </div>
       </div>
     </div>
   )

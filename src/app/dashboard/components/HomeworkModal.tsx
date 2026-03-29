@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from '@/shared/components/ui/modal';
 import { Button } from '@/shared/components/ui/button';
 import { Badge } from '@/shared/components/ui/badge';
-import { Check, XCircle, FileText } from 'lucide-react';
+import { Check, XCircle } from 'lucide-react';
 
 interface HomeworkSubmission {
   id: string;
@@ -57,7 +57,7 @@ export function HomeworkModal({
 
       <div className="mb-4 sm:mb-6">
         <h4 className="font-semibold mb-2 text-gray-900 dark:text-white flex items-center gap-2 text-sm sm:text-base">
-          <FileText size={16} className="sm:w-5 sm:h-5" />
+          
           Feladat leírása
         </h4>
         <div className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap bg-white/5 p-3 sm:p-4 rounded-lg border border-white/10 shadow-inner text-xs sm:text-sm break-words">
@@ -84,7 +84,7 @@ export function HomeworkModal({
                     Értékelve
                   </Badge>
                 ) : (
-                  <Badge className="bg-blue-500 hover:bg-blue-600 text-xs">
+                  <Badge className="bg-emerald-500 hover:bg-emerald-600 text-xs">
                     Beküldve
                   </Badge>
                 )}

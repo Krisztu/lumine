@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import { Badge } from '@/shared/components/ui/badge'
-import { Phone, MapPin, BookOpen } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 interface ClassOverviewTabProps {
@@ -14,6 +13,7 @@ interface ClassOverviewTabProps {
     role: string;
     phone?: string;
     address?: string;
+    email?: string;
   }>
   currentUser?: any
   grades?: any[]
@@ -65,7 +65,7 @@ export function ClassOverviewTab({ allUsers, currentUser, grades = [] }: ClassOv
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 font-medium">Diákok ({classStudents.length})</p>
         <div className="space-y-3">
           {classStudents.map((student, index) => (
-            <div key={student.id || student.email || `student-${index}`} className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div key={student.id || student.email || `student-${index}`} className="p-3 bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40 rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium text-gray-900 dark:text-gray-100">
                   {student.fullName || student.name}
@@ -77,7 +77,7 @@ export function ClassOverviewTab({ allUsers, currentUser, grades = [] }: ClassOv
               {currentUser?.role === 'homeroom_teacher' && (
                 <div className="mb-2">
                   <div className="flex items-center gap-2 mb-1">
-                    <BookOpen className="h-3 w-3 text-gray-500" />
+                    
                     <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">Jegyeim:</span>
                   </div>
                   <div className="flex flex-wrap gap-1">
@@ -106,13 +106,13 @@ export function ClassOverviewTab({ allUsers, currentUser, grades = [] }: ClassOv
               )}
               {student.phone && (
                 <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-1">
-                  <Phone className="h-3 w-3" />
+                  
                   <span>{student.phone}</span>
                 </div>
               )}
               {student.address && (
                 <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <MapPin className="h-3 w-3" />
+                  
                   <span>{student.address}</span>
                 </div>
               )}

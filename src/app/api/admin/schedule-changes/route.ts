@@ -4,7 +4,7 @@ import { db } from '@/lib/firebase-admin'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { teacherId, date, timeSlot, changeType, newSubject, newTeacher, newClass, newRoom } = body
+    const { teacherId, date, timeSlot, changeType, newSubject, newTeacher, newClass, newRoom, originalTeacher, originalClass } = body
 
     if (!teacherId || !date || !timeSlot || !changeType) {
       return NextResponse.json({ error: 'Hiányzó kötelező mezők' }, { status: 400 })
@@ -15,6 +15,8 @@ export async function POST(request: NextRequest) {
       date,
       timeSlot,
       changeType,
+      originalTeacher: originalTeacher || '',
+      originalClass: originalClass || '',
       newSubject: newSubject || '',
       newTeacher: newTeacher || '',
       newClass: newClass || '',

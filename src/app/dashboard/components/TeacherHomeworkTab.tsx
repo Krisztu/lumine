@@ -5,7 +5,6 @@ import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Textarea } from '@/shared/components/ui/textarea'
 import { Badge } from '@/shared/components/ui/badge'
-import { FileText, Users, Calendar } from 'lucide-react'
 import { useState } from 'react'
 import { StudentSubmissionModal } from './StudentSubmissionModal'
 
@@ -225,7 +224,7 @@ export function TeacherHomeworkTab({
                 showAlert('Hiba történt', 'error')
               }
             }}
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full bg-emerald-600 hover:bg-emerald-700"
             size="sm"
           >
             Házi feladat kiadása
@@ -258,13 +257,13 @@ export function TeacherHomeworkTab({
                       <div className="flex-1">
                         <CardTitle className="text-lg text-gray-900 dark:text-white">{hw.title}</CardTitle>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center gap-2">
-                          <Users className="w-4 h-4" />
+                          
                           {hw.className} • {hw.subject}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-1">
-                          <Users className="w-3 h-3" />
+                        <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white flex items-center gap-1">
+                          
                           {submissionCount} beadás
                         </Badge>
                         {evaluatedCount > 0 && (
@@ -292,7 +291,7 @@ export function TeacherHomeworkTab({
                                 setSelectedSubmission({ ...submission, homeworkTitle: hw.title })
                                 setShowSubmissionModal(true)
                               }}
-                              className="px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
+                              className="px-2 py-1 text-xs bg-emerald-500 hover:bg-emerald-600 text-white rounded transition-colors"
                             >
                               {submission.studentName}
                             </button>
@@ -305,7 +304,7 @@ export function TeacherHomeworkTab({
                     )}
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
+                        
                         Határidő: {new Date(hw.dueDate).toLocaleDateString('hu-HU')}
                       </span>
                       <div className="flex gap-2">

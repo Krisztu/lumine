@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import { Button } from '@/shared/components/ui/button'
 import { Skeleton } from '@/shared/components/ui/skeleton'
-import { QrCode, LogIn, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 
 interface QRTabProps {
   qrCode: string
@@ -16,16 +16,16 @@ export function QRTab({ qrCode, qrType, generateUserQR }: QRTabProps) {
     <Card className="border-none shadow-sm">
       <CardHeader className="p-3 sm:p-6">
         <CardTitle className="flex items-center text-sm sm:text-lg">
-          <QrCode className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+          
           QR Kód
         </CardTitle>
       </CardHeader>
       <CardContent className="p-3 sm:p-6">
         {qrCode ? (
           <div className="space-y-4 flex flex-col items-center">
-            <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg w-40 sm:w-56 md:w-64">
-              <p className="text-xs sm:text-sm font-semibold text-blue-900 dark:text-blue-200 flex items-center justify-center gap-2">
-                <QrCode className="h-3 w-3 sm:h-4 sm:w-4" />
+            <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-lg w-40 sm:w-56 md:w-64">
+              <p className="text-xs sm:text-sm font-semibold text-emerald-900 dark:text-emerald-200 flex items-center justify-center gap-2">
+                
                 {qrType === 'entry' ? 'Belépési QR kód' : 'Kilépési QR kód'}
               </p>
             </div>
@@ -38,7 +38,7 @@ export function QRTab({ qrCode, qrType, generateUserQR }: QRTabProps) {
                 variant={qrType === 'entry' ? 'default' : 'outline'}
                 className="text-xs sm:text-sm flex items-center justify-center gap-2 flex-1"
               >
-                <LogIn className="h-4 w-4" />
+                
                 Belépés
               </Button>
               <Button

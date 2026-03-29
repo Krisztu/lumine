@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import { Input } from '@/shared/components/ui/input'
-import { UserIcon, BookOpen, BarChart3 } from 'lucide-react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/components/ui/table'
 
 interface PrincipalDashboardProps {
@@ -36,15 +35,15 @@ export function PrincipalDashboard({ showAlert, allUsers }: PrincipalDashboardPr
       <Card className="border-none shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center text-lg">
-            <BarChart3 className="h-5 w-5 mr-2 text-blue-600" />
+            
             Iskola statisztikák
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-              <h4 className="font-semibold text-blue-900 dark:text-blue-100">Diákok</h4>
-              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+              <h4 className="font-semibold text-emerald-900 dark:text-emerald-100">Diákok</h4>
+              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                 {allUsers.filter(u => u.role === 'student' || u.role === 'dj').length}
               </p>
             </div>
@@ -60,9 +59,9 @@ export function PrincipalDashboard({ showAlert, allUsers }: PrincipalDashboardPr
                 {allUsers.filter(u => u.role === 'parent').length}
               </p>
             </div>
-            <div className="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
-              <h4 className="font-semibold text-purple-900 dark:text-purple-100">Összes</h4>
-              <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+            <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+              <h4 className="font-semibold text-emerald-900 dark:text-emerald-100">Összes</h4>
+              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                 {allUsers.length}
               </p>
             </div>

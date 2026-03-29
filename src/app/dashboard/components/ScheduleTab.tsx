@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
-import { Calendar } from 'lucide-react'
-
 interface ScheduleTabProps {
   lessons: any[]
   selectedDate: Date
@@ -42,7 +40,9 @@ export function ScheduleTab({
   useEffect(() => {
     const loadScheduleChanges = async () => {
       try {
-        const response = await fetch(`/api/admin/schedule-changes?date=${selectedDate.toISOString().split('T')[0]}`)
+        const response = await fetch(`/api/admin/schedule-changes?date=${selectedDate.toISOString().split('T')[0]}&t=${Date.now()}`, {
+          cache: 'no-store'
+        })
         if (response.ok) {
           const changes = await response.json()
           setScheduleChanges(changes)
@@ -67,7 +67,7 @@ export function ScheduleTab({
     <Card>
       <CardHeader className="p-3 sm:p-6">
         <CardTitle className="flex items-center text-sm sm:text-lg">
-          <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+          
           Órarend
         </CardTitle>
       </CardHeader>
@@ -76,7 +76,7 @@ export function ScheduleTab({
           <div className="flex items-center justify-between mb-2 sm:mb-4 gap-1 sm:gap-2">
             <button
               onClick={() => setCurrentWeek(currentWeek - 1)}
-              className="px-2 py-1 sm:px-4 sm:py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-xs sm:text-sm"
+              className="px-2 py-1 sm:px-4 sm:py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600 transition-colors text-xs sm:text-sm"
             >
               <span className="hidden sm:inline">Előző hét</span>
               <span className="sm:hidden">←</span>
@@ -91,7 +91,7 @@ export function ScheduleTab({
                     key={day}
                     onClick={() => setSelectedDate(dayDate)}
                     className={`px-2 py-1 sm:px-3 sm:py-2 rounded text-xs sm:text-sm font-medium whitespace-nowrap ${isSelected
-                      ? 'bg-blue-500 text-white'
+                      ? 'bg-emerald-500 text-white'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
                   >
@@ -103,7 +103,7 @@ export function ScheduleTab({
             </div>
             <button
               onClick={() => setCurrentWeek(currentWeek + 1)}
-              className="px-2 py-1 sm:px-4 sm:py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-xs sm:text-sm"
+              className="px-2 py-1 sm:px-4 sm:py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600 transition-colors text-xs sm:text-sm"
             >
               <span className="hidden sm:inline">Következő hét</span>
               <span className="sm:hidden">→</span>
@@ -117,7 +117,7 @@ export function ScheduleTab({
           <div className="space-y-1 sm:space-y-2 relative">
             {(() => {
               const selectedDay = selectedDate.toLocaleDateString('hu-HU', { weekday: 'long' })
-              const dayMap = { 'hétfő': 'Hétfő', 'kedd': 'Kedd', 'szerda': 'Szerda', 'csütörtök': 'Csütörtök', 'péntek': 'Péntek' }
+              const dayMap: Record<string, string> = { 'hétfő': 'Hétfő', 'kedd': 'Kedd', 'szerda': 'Szerda', 'csütörtök': 'Csütörtök', 'péntek': 'Péntek' }
               const dayLessons = lessons.filter(lesson => lesson.Day === dayMap[selectedDay.toLowerCase()])
               
               // Helyettesítések betöltése
@@ -136,7 +136,22 @@ export function ScheduleTab({
               // Helyettesítések alkalmazása
               const lessonsWithChanges = timeSlots.map(time => {
                 const lesson = dayLessons.find(l => l.StartTime === time)
-                const change = dayChanges.find(c => c.timeSlot === time)
+                
+                const change = dayChanges.find(c => {
+                  if (c.timeSlot !== time) return false;
+                  
+                  if (lesson) {
+                    const matchesClass = c.originalClass === lesson.Class || c.teacherId === `class_${lesson.Class}`;
+                    const matchesTeacher = c.originalTeacher === lesson.Teacher || c.teacherId === currentUser?.id;
+                    return matchesClass || matchesTeacher;
+                  } else {
+                    if (userRole === 'teacher' || userRole === 'class_teacher') {
+                      return c.newTeacher === (currentUser?.fullName || currentUser?.name) || c.teacherId === currentUser?.id;
+                    } else {
+                      return c.newClass === currentUser?.class || c.teacherId === `class_${currentUser?.class}`;
+                    }
+                  }
+                })
                 
                 if (change) {
                   if (change.changeType === 'cancelled') {
@@ -231,18 +246,26 @@ export function ScheduleTab({
                 return (
                   <div
                     key={index}
-                    className={`rounded p-3 text-sm relative group ${lesson.status === 'cancelled' ? 'bg-red-100 dark:bg-red-900 border-l-4 border-red-500' :
-                      lesson.status === 'substituted' && lesson.isSubstitution && (userRole === 'teacher' || userRole === 'class_teacher') ? 'bg-yellow-100 dark:bg-yellow-900 border-l-4 border-yellow-500' :
-                      lesson.status === 'substituted' && !lesson.isSubstitution && (userRole === 'teacher' || userRole === 'class_teacher') ? 'bg-orange-100 dark:bg-orange-900 border-l-4 border-orange-500' :
-                      lesson.status === 'substituted' ? 'bg-yellow-100 dark:bg-yellow-900 border-l-4 border-yellow-500' :
-                        lesson.status === 'free' ? 'bg-gray-50 dark:bg-gray-800 border-l-4 border-gray-300' :
-                          isCurrentLesson ? 'bg-green-100 dark:bg-green-900 border-l-4 border-green-500' :
-                            (userRole === 'teacher' || userRole === 'class_teacher') && attendanceRecord ? 'bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-400' :
-                            'bg-white dark:bg-gray-700'
-                      } ${userRole === 'teacher' && lesson.status !== 'free' && lesson.status !== 'cancelled' && 
-                        (lesson.Teacher === (currentUser?.fullName || currentUser?.name) || lesson.isSubstitution) && !attendanceRecord ? 
-                        'cursor-pointer hover:shadow-md transition-shadow' : ''
-                      } ${(userRole === 'teacher' || userRole === 'class_teacher') && attendanceRecord ? 'opacity-75' : ''}`}
+                    className={`rounded-lg p-3 text-sm relative group border-l-4 transition-all ${
+                      lesson.status === 'cancelled'
+                        ? 'bg-red-50 dark:bg-red-950/60 border-red-500'
+                        : lesson.status === 'substituted' && lesson.isSubstitution && (userRole === 'teacher' || userRole === 'class_teacher')
+                        ? 'bg-yellow-50 dark:bg-yellow-950/60 border-yellow-400'
+                        : lesson.status === 'substituted' && !lesson.isSubstitution && (userRole === 'teacher' || userRole === 'class_teacher')
+                        ? 'bg-orange-50 dark:bg-orange-950/60 border-orange-500'
+                        : lesson.status === 'substituted'
+                        ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-400'
+                        : lesson.status === 'free'
+                        ? 'bg-gray-50 dark:bg-gray-800/60 border-gray-300 dark:border-gray-600'
+                        : attendanceRecord
+                        ? 'bg-sky-50 dark:bg-sky-950/60 border-sky-500'
+                        : isCurrentLesson
+                        ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500'
+                        : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                    } ${userRole === 'teacher' && lesson.status !== 'free' && lesson.status !== 'cancelled' &&
+                        (lesson.Teacher === (currentUser?.fullName || currentUser?.name) || lesson.isSubstitution) && !attendanceRecord
+                        ? 'cursor-pointer hover:shadow-md hover:scale-[1.005]' : ''
+                    } ${attendanceRecord ? 'opacity-80' : ''}`}
                     onClick={() => {
                       if (userRole === 'teacher' && lesson.status !== 'free' && lesson.status !== 'cancelled' && 
                           (lesson.Teacher === (currentUser?.fullName || currentUser?.name) || lesson.isSubstitution)) {
@@ -269,31 +292,62 @@ export function ScheduleTab({
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                       </div>
                     )}
-                    {isCurrentLesson && (
-                      <div className="absolute top-2 right-2">
-                        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                      </div>
-                    )}
-                    {(userRole === 'teacher' || userRole === 'class_teacher') && attendanceRecord && (
-                      <div className="absolute top-6 right-2">
-                        <div className="w-3 h-3 bg-blue-500 rounded-full" title="Jelenlét rögzítve"></div>
-                      </div>
-                    )}
+                    <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
+                      {isCurrentLesson && !attendanceRecord && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">MOST</span>
+                          <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                        </div>
+                      )}
+                      {attendanceRecord && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-sky-600 dark:text-sky-400 font-semibold">KÖNYVELT</span>
+                          <div className="w-2.5 h-2.5 bg-sky-500 rounded-full"></div>
+                        </div>
+                      )}
+                      {lesson.status === 'cancelled' && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-red-600 dark:text-red-400 font-semibold">ELMARADT</span>
+                          <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
+                        </div>
+                      )}
+                      {lesson.status === 'substituted' && lesson.isSubstitution && (userRole === 'teacher' || userRole === 'class_teacher') && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-yellow-600 dark:text-yellow-400 font-semibold">HELYETTESÍTEK</span>
+                          <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
+                        </div>
+                      )}
+                      {lesson.status === 'substituted' && !lesson.isSubstitution && (userRole === 'teacher' || userRole === 'class_teacher') && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-orange-600 dark:text-orange-400 font-semibold">HELYETTESÍTENEK</span>
+                          <div className="w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
+                        </div>
+                      )}
+                      {lesson.status === 'substituted' && userRole !== 'teacher' && userRole !== 'class_teacher' && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold">HELYETTESÍTÉS</span>
+                          <div className="w-2.5 h-2.5 bg-amber-500 rounded-full"></div>
+                        </div>
+                      )}
+                    </div>
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <div className="font-medium text-blue-600 dark:text-blue-400">{lesson.StartTime}</div>
-                        <div className={`font-semibold ${lesson.status === 'cancelled' ? 'text-red-700 dark:text-red-300' :
+                        <div className={`text-xs font-bold tracking-wide mb-0.5 ${
+                          attendanceRecord ? 'text-sky-600 dark:text-sky-400'
+                          : isCurrentLesson ? 'text-emerald-600 dark:text-emerald-400'
+                          : 'text-gray-500 dark:text-gray-400'
+                        }`}>{lesson.StartTime}</div>
+                        <div className={`font-semibold ${
+                          lesson.status === 'cancelled' ? 'text-red-700 dark:text-red-300' :
                           lesson.status === 'substituted' && lesson.isSubstitution && (userRole === 'teacher' || userRole === 'class_teacher') ? 'text-yellow-700 dark:text-yellow-300' :
                           lesson.status === 'substituted' && !lesson.isSubstitution && (userRole === 'teacher' || userRole === 'class_teacher') ? 'text-orange-700 dark:text-orange-300' :
-                          lesson.status === 'substituted' ? 'text-yellow-700 dark:text-yellow-300' :
-                            lesson.status === 'free' ? 'text-gray-500 dark:text-gray-400 italic' :
-                              'text-gray-900 dark:text-white'
-                          }`}>
-                          {lesson.Subject}
-                          {lesson.status === 'cancelled' && ' (ELMARADT)'}
-                          {lesson.status === 'substituted' && lesson.isSubstitution && (userRole === 'teacher' || userRole === 'class_teacher') && ' (HELYETTESÍTEK)'}
-                          {lesson.status === 'substituted' && !lesson.isSubstitution && (userRole === 'teacher' || userRole === 'class_teacher') && ' (HELYETTESÍTENEK)'}
-                          {lesson.status === 'substituted' && userRole !== 'teacher' && userRole !== 'class_teacher' && ' (HELYETTESÍTÉS)'}
+                          lesson.status === 'substituted' ? 'text-amber-700 dark:text-amber-300' :
+                          lesson.status === 'free' ? 'text-gray-400 dark:text-gray-500 italic' :
+                          attendanceRecord ? 'text-sky-800 dark:text-sky-200' :
+                          isCurrentLesson ? 'text-emerald-800 dark:text-emerald-200' :
+                          'text-gray-900 dark:text-white'
+                        }`}>
+                          {lesson.Subject || (lesson.status === 'free' ? 'Szabad óra' : '')}
                         </div>
                         {lesson.status !== 'free' && (
                           <>

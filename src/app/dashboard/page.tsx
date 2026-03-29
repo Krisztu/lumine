@@ -5,7 +5,8 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ui/tabs'
 import { CustomAlert } from '@/shared/components/ui/custom-alert'
-import { DashboardHeader } from './components/DashboardHeader'
+import { Sidebar } from './components/Sidebar'
+
 import { AdminDashboard } from './components/AdminDashboard'
 import { StudentDashboard } from './components/StudentDashboard'
 import { ParentDashboard } from './components/ParentDashboard'
@@ -47,7 +48,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [darkMode, setDarkMode] = useState(true)
   const [cookieConsent, setCookieConsent] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  // mobileMenuOpen already removed - using bottom nav instead
   const [alertData, setAlertData] = useState<{ isOpen: boolean; title: string; message: string; type: 'success' | 'error' | 'warning' | 'info' }>({ isOpen: false, title: '', message: '', type: 'info' })
 
   const [grades, setGrades] = useState<any[]>([])
@@ -664,61 +665,22 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen transition-colors pb-20">
-      <DashboardHeader
-        darkMode={darkMode}
-        setDarkMode={setDarkMode}
-        cookieConsent={cookieConsent}
-        currentUser={currentUser}
-        userRole={userRole}
-        user={user}
-        onLogout={handleLogout}
-      />
+    <div className="min-h-screen transition-colors">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        {/* Sidebar (desktop + mobile nav) */}
+        <Sidebar
+          tabs={getTabs()}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+          cookieConsent={cookieConsent}
+          currentUser={currentUser}
+          user={user}
+          onLogout={handleLogout}
+        />
 
-      <main className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-8">
-        <Tabs defaultValue="dashboard" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="hidden md:flex overflow-x-auto w-full glass p-2 rounded-xl gap-1">
-            {getTabs().map(tab => (
-              <TabsTrigger key={tab.value} value={tab.value} className="text-sm whitespace-nowrap px-4">
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <div className="md:hidden mb-4">
-            <Button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="w-full flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              <span className="flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-                Menü
-              </span>
-              <svg className={`w-4 h-4 transition-transform ${mobileMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </Button>
-          </div>
-
-          {mobileMenuOpen && (
-            <div className="md:hidden mb-4 glass-card overflow-hidden">
-              <TabsList className="flex flex-col w-full h-auto bg-transparent gap-0 p-0">
-                {getTabs().map(tab => (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full justify-start text-left px-4 py-3 rounded-none border-b border-white/10 hover:bg-white/5 transition-colors flex items-center gap-2"
-                  >
-                    <tab.icon className="h-4 w-4" />
-                    {tab.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </div>
-          )}
+      <main className="md:ml-64 px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-20 md:pb-8">
 
           <TabsContent value="dashboard" className="space-y-6">
             {currentUser?.role === 'admin' ? (
@@ -1094,8 +1056,8 @@ export default function Dashboard() {
               loadAttendance={loadAttendance}
             />
           </TabsContent>
-        </Tabs>
       </main>
+      </Tabs>
 
       <CustomAlert
         open={alertData.isOpen}
@@ -1110,28 +1072,29 @@ export default function Dashboard() {
         onClose={() => setShowAttendanceModal(false)}
         lesson={selectedLesson}
         students={allUsers}
+        selectedDate={selectedDate}
         onSave={async (data) => {
-          try {
-            const token = await user?.getIdToken()
-            const response = await fetch('/api/attendance', {
-              method: 'POST',
-              headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify({
-                ...data,
-                teacherId: currentUser?.id || user?.uid
-              })
+          const token = await user?.getIdToken()
+          const isEdit = !!data.id
+          const response = await fetch('/api/attendance', {
+            method: isEdit ? 'PUT' : 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              ...data,
+              teacherId: currentUser?.id || user?.uid
             })
-            if (response.ok) {
-              await loadAttendance()
-              showAlert('Jelenlét sikeresen rögzítve!', 'success')
-            } else {
-              showAlert('Hiba a jelenlét rögzítése során', 'error')
-            }
-          } catch (error) {
-            showAlert('Hiba történt', 'error')
+          })
+          if (response.ok) {
+            await loadAttendance()
+            showAlert(isEdit ? 'Jelenlét sikeresen módosítva!' : 'Jelenlét sikeresen rögzítve!', 'success')
+          } else if (response.status === 409) {
+            showAlert('Ehhez az órához már rögzítve van a jelenlét!', 'warning', 'Figyelem')
+            throw new Error('already_booked')
+          } else {
+            throw new Error('save_error')
           }
         }}
         showAlert={showAlert}

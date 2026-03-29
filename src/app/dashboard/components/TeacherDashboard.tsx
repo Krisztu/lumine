@@ -1,8 +1,6 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
-import { BarChart3, Users, BookOpen } from 'lucide-react'
-
 interface TeacherDashboardProps {
   lessons: any[]
   grades: any[]
@@ -26,12 +24,12 @@ export function TeacherDashboard({ lessons, grades, currentUser, allUsers }: Tea
       <Card className="border-none shadow-sm">
         <CardHeader>
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
+            
             Osztályaim
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-blue-600">{teacherClasses.length}</div>
+          <div className="text-3xl font-bold text-emerald-600">{teacherClasses.length}</div>
           <p className="text-xs text-gray-500 mt-1">{teacherClasses.join(', ')}</p>
         </CardContent>
       </Card>
@@ -39,7 +37,7 @@ export function TeacherDashboard({ lessons, grades, currentUser, allUsers }: Tea
       <Card className="border-none shadow-sm">
         <CardHeader>
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Users className="h-4 w-4" />
+            
             Diákjaim
           </CardTitle>
         </CardHeader>
@@ -52,12 +50,12 @@ export function TeacherDashboard({ lessons, grades, currentUser, allUsers }: Tea
       <Card className="border-none shadow-sm">
         <CardHeader>
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
+            
             Átlag jegy
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-purple-600">{avgGrade}</div>
+          <div className="text-3xl font-bold text-emerald-600">{avgGrade}</div>
           <p className="text-xs text-gray-500 mt-1">{grades.length} jegy</p>
         </CardContent>
       </Card>

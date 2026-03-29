@@ -41,7 +41,7 @@ export function StudentExcusesTab({
       <CardContent className="p-3 sm:p-6">
         <div className="space-y-4">
           <div className="bg-primary/10 p-4 rounded-lg">
-            <p className="text-sm text-blue-800 dark:text-blue-200">Válaszd ki a hiányzásokat, amelyeket igazolni szeretnél, és küldd be az osztályfőnöködnek jóváhagyásra.</p>
+            <p className="text-sm text-emerald-800 dark:text-emerald-200">Válaszd ki a hiányzásokat, amelyeket igazolni szeretnél, és küldd be az osztályfőnöködnek jóváhagyásra.</p>
           </div>
           {(() => {
             const unexcusedAbsences = attendance.filter(record => !record.excused)
@@ -136,7 +136,7 @@ export function StudentExcusesTab({
                     showAlert('Hiba történt', 'error')
                   }
                 }}
-                className="w-full bg-blue-600 hover:bg-blue-700"
+                className="w-full bg-emerald-600 hover:bg-emerald-700"
               >
                 Igazolás beküldése ({selectedAbsences.length} hiányzás)
               </Button>

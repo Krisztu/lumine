@@ -5,8 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui
 import { Badge } from '@/shared/components/ui/badge'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
-import { Users, UserIcon, BookOpen } from 'lucide-react'
-
 interface AdminUsersTabProps {
   allUsers: any[]
   availableClasses: any[]
@@ -308,7 +306,7 @@ export function AdminUsersTab({
                         {selectedSubjects.map((subject, index) => (
                           <span
                             key={index}
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 rounded text-xs"
                           >
                             {subject}
                             <button
@@ -333,7 +331,7 @@ export function AdminUsersTab({
                       id="isHomeroom"
                       checked={userForm.isHomeroom}
                       onChange={(e) => setUserForm({ ...userForm, isHomeroom: e.target.checked })}
-                      className="w-4 h-4 text-blue-600 rounded"
+                      className="w-4 h-4 text-emerald-600 rounded"
                     />
                     <label htmlFor="isHomeroom" className="text-sm font-medium cursor-pointer">
                       Osztályfőnök
@@ -389,7 +387,7 @@ export function AdminUsersTab({
                       id="isDJ"
                       checked={userForm.isDJ}
                       onChange={(e) => setUserForm({ ...userForm, isDJ: e.target.checked })}
-                      className="w-4 h-4 text-blue-600 rounded"
+                      className="w-4 h-4 text-emerald-600 rounded"
                     />
                     <label htmlFor="isDJ" className="text-sm font-medium cursor-pointer">
                       DJ szerepkör
@@ -493,13 +491,13 @@ export function AdminUsersTab({
                 }}
                 className={`w-full flex items-center justify-center gap-2 ${
                   selectedUserType === 'teacher' ? 'bg-green-600 hover:bg-green-700' :
-                  selectedUserType === 'student' ? 'bg-blue-600 hover:bg-blue-700' :
-                  selectedUserType === 'parent' ? 'bg-purple-600 hover:bg-purple-700' :
+                  selectedUserType === 'student' ? 'bg-emerald-600 hover:bg-emerald-700' :
+                  selectedUserType === 'parent' ? 'bg-emerald-600 hover:bg-emerald-700' :
                   'bg-orange-600 hover:bg-orange-700'
                 }`}
                 size="sm"
               >
-                <UserIcon className="h-4 w-4" />
+                
                 {selectedUserType === 'teacher' ? 'Tanár' : selectedUserType === 'student' ? 'Diák' : selectedUserType === 'parent' ? 'Szülő' : 'Igazgató'} regisztrálása
               </Button>
             </>
@@ -567,13 +565,13 @@ export function AdminUsersTab({
                     {user.phone && <p className="text-xs text-gray-500 dark:text-gray-500">Tel: {user.phone}</p>}
                     {user.address && <p className="text-xs text-gray-500 dark:text-gray-500">Cím: {user.address}</p>}
                     {user.studentId && <p className="text-xs text-gray-500 dark:text-gray-500">ID: {user.studentId}</p>}
-                    {user.class && <p className="text-xs text-blue-600 dark:text-blue-400">Osztály: {user.class}</p>}
+                    {user.class && <p className="text-xs text-emerald-600 dark:text-emerald-400">Osztály: {user.class}</p>}
                     {user.subject && <p className="text-xs text-green-600 dark:text-green-400">Tantárgy: {user.subject}</p>}
                     <p className="text-xs text-gray-400">Firebase ID: {user.id || 'Nincs ID'}</p>
                     <span className={`inline-block px-2 py-1 rounded text-xs ${user.role === 'admin' ? 'bg-red-100 text-red-800' :
                       user.role === 'principal' ? 'bg-orange-100 text-orange-800' :
-                        user.role === 'teacher' ? 'bg-purple-100 text-purple-800' :
-                          user.role === 'homeroom_teacher' ? 'bg-indigo-100 text-indigo-800' :
+                        user.role === 'teacher' ? 'bg-emerald-100 text-emerald-800' :
+                          user.role === 'homeroom_teacher' ? 'bg-emerald-100 text-emerald-800' :
                             user.role === 'parent' ? 'bg-pink-100 text-pink-800' :
                               user.role === 'dj' ? 'bg-yellow-100 text-yellow-800' :
                                 'bg-green-100 text-green-800'

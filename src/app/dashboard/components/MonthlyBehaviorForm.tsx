@@ -107,7 +107,7 @@ export function MonthlyBehaviorForm({ students, onSubmit, onSuccess }: MonthlyBe
 
         <Button
           onClick={handleSubmit}
-          className="w-full bg-blue-600 hover:bg-blue-700"
+          className="w-full bg-emerald-600 hover:bg-emerald-700"
         >
           Rögzítés
         </Button>

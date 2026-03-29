@@ -27,7 +27,7 @@ export function DashboardHeader({
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-lg shadow-primary/30">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-lg shadow-primary/30">
               <span className="text-white font-bold text-sm sm:text-lg">L</span>
             </div>
             <h1 className="text-lg sm:text-2xl font-bold text-gradient">Luminé</h1>

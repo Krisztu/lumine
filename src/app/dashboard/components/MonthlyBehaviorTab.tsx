@@ -6,7 +6,6 @@ import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
 import { Textarea } from '@/shared/components/ui/textarea'
-import { Calendar, Star, Heart, Award, AlertTriangle } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 interface MonthlyBehaviorTabProps {
@@ -181,7 +180,7 @@ export function MonthlyBehaviorTab({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
+              
               Havi Viselkedési Értékelés
             </CardTitle>
           </CardHeader>
@@ -238,7 +237,7 @@ export function MonthlyBehaviorTab({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="flex items-center gap-2">
-                  <Heart className="h-4 w-4 text-purple-500" />
+                  
                   Szorgalom
                 </Label>
                 <Select value={monthlyForm.szorgalom.toString()} onValueChange={(value) => setMonthlyForm({...monthlyForm, szorgalom: parseInt(value)})}>
@@ -254,7 +253,7 @@ export function MonthlyBehaviorTab({
               </div>
               <div>
                 <Label className="flex items-center gap-2">
-                  <Star className="h-4 w-4 text-indigo-500" />
+                  
                   Magatartás
                 </Label>
                 <Select value={monthlyForm.magatartas.toString()} onValueChange={(value) => setMonthlyForm({...monthlyForm, magatartas: parseInt(value)})}>
@@ -289,7 +288,7 @@ export function MonthlyBehaviorTab({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Award className="h-5 w-5" />
+              
               Dicséret / Figyelmeztetés
             </CardTitle>
           </CardHeader>
@@ -319,13 +318,13 @@ export function MonthlyBehaviorTab({
                 <SelectContent>
                   <SelectItem value="praise">
                     <div className="flex items-center gap-2">
-                      <Star className="h-4 w-4 text-green-500" />
+                      
                       Dicséret
                     </div>
                   </SelectItem>
                   <SelectItem value="warning">
                     <div className="flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 text-red-500" />
+                      
                       Figyelmeztetés
                     </div>
                   </SelectItem>
@@ -370,18 +369,18 @@ export function MonthlyBehaviorTab({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {monthlyBehavior.map(mb => (
-                  <div key={mb.id} className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                  <div key={mb.id} className="p-4 border rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium">{mb.studentName}</span>
                       <span className="text-sm text-gray-500">{mb.month}. hónap {mb.year}</span>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-1">
-                        <Heart className="h-4 w-4 text-purple-500" />
+                        
                         <span>Szorgalom: {mb.szorgalom}</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 text-indigo-500" />
+                        
                         <span>Magatartás: {mb.magatartas}</span>
                       </div>
                     </div>
@@ -403,9 +402,9 @@ export function MonthlyBehaviorTab({
                     </div>
                     <div className="flex items-center gap-2 mb-1">
                       {rec.type === 'praise' ? (
-                        <Star className="h-4 w-4 text-green-600" />
+                        <img src="/LuminéLogo.png" alt="Dicséret" className="w-6 h-6 object-contain" />
                       ) : (
-                        <AlertTriangle className="h-4 w-4 text-red-600" />
+                        <img src="/LuminéLogo.png" alt="Figyelmeztetés" className="w-6 h-6 object-contain grayscale opacity-50" />
                       )}
                       <span className="font-medium">{rec.reason}</span>
                     </div>

@@ -70,7 +70,7 @@ export function SubmissionModal({ isOpen, onClose, homework, onSubmit }: Submiss
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white"
           >
             {isSubmitting ? (
               <>

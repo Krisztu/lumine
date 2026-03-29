@@ -6,7 +6,7 @@ import { Button } from '@/shared/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
 import { Badge } from '@/shared/components/ui/badge'
 import { Modal } from '@/shared/components/ui/modal'
-import { UserCheck, Calendar, Award, X } from 'lucide-react'
+import { X } from 'lucide-react'
 
 interface BehaviorGradingTabProps {
   currentUser: any
@@ -223,7 +223,7 @@ export function BehaviorGradingTab({ currentUser, allUsers, showAlert }: Behavio
       <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <Award className="h-5 w-5 text-blue-600" />
+            
             Magatartás és Szorgalom Értékelés
           </CardTitle>
           <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -237,9 +237,9 @@ export function BehaviorGradingTab({ currentUser, allUsers, showAlert }: Behavio
                 setGradeType('Magatartás')
                 setIsModalOpen(true)
               }}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
             >
-              <UserCheck className="h-4 w-4 mr-2" />
+              
               Magatartás jegy
             </Button>
             <Button
@@ -249,22 +249,22 @@ export function BehaviorGradingTab({ currentUser, allUsers, showAlert }: Behavio
               }}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
-              <Award className="h-4 w-4 mr-2" />
+              
               Szorgalom jegy
             </Button>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="border border-blue-200 dark:border-blue-800">
+            <Card className="border border-emerald-200 dark:border-emerald-800">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base text-blue-700 dark:text-blue-300">Magatartás jegyek</CardTitle>
+                <CardTitle className="text-base text-emerald-700 dark:text-emerald-300">Magatartás jegyek</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {students.map(student => {
                     const grades = getStudentGrades(student.id, 'Magatartás')
                     return (
-                      <div key={student.id} className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                      <div key={student.id} className="flex items-center justify-between p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
                         <span className="font-medium text-sm">{student.fullName || student.name}</span>
                         <div className="flex gap-1">
                           {grades.length === 0 ? (
@@ -272,7 +272,7 @@ export function BehaviorGradingTab({ currentUser, allUsers, showAlert }: Behavio
                           ) : (
                             grades.map((grade, idx) => (
                               <div key={idx} className="flex items-center gap-1">
-                                <Badge className="bg-blue-500 text-white text-xs">
+                                <Badge className="bg-emerald-500 text-white text-xs">
                                   {grade.type?.split('-')[1] || 'N/A'}. hó: {grade.grade}
                                 </Badge>
                                 <button

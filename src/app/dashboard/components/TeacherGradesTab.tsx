@@ -5,7 +5,6 @@ import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Textarea } from '@/shared/components/ui/textarea'
 import { Badge } from '@/shared/components/ui/badge'
-import { UserIcon } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
 
 interface TeacherGradesTabProps {
@@ -324,7 +323,7 @@ export function TeacherGradesTab({
 
           <Button
             onClick={handleAddGrade}
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full bg-emerald-600 hover:bg-emerald-700"
             size="sm"
           >
             Jegy rögzítése

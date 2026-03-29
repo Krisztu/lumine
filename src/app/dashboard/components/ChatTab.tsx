@@ -3,8 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import { Button } from '@/shared/components/ui/button'
 import { Textarea } from '@/shared/components/ui/textarea'
-import { MessageCircle } from 'lucide-react'
-
 interface ChatTabProps {
   chatMessages: any[]
   chatMessage: string
@@ -28,7 +26,7 @@ export function ChatTab({
     <Card>
       <CardHeader className="p-3 sm:p-6">
         <CardTitle className="flex items-center text-sm sm:text-lg">
-          <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+          
           Üzenőfal
         </CardTitle>
       </CardHeader>

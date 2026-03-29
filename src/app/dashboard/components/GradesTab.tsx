@@ -1,7 +1,6 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
-import { BookOpen, Award, AlertTriangle, Star, Heart } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 interface GradesTabProps {
@@ -93,14 +92,14 @@ export function GradesTab({
       <Card className="lg:col-span-1">
         <CardHeader className="p-3 sm:p-6">
           <CardTitle className="flex items-center text-sm sm:text-lg">
-            <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+            
             Átlagok
           </CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-6">
           <div className="space-y-4">
-            <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+            <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
+              <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
                 {academicAverage}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Tantárgyi átlag</div>
@@ -152,7 +151,7 @@ export function GradesTab({
                   <button
                     onClick={() => setSelectedSubject(null)}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${selectedSubject === null
-                      ? 'bg-blue-500 text-white shadow-sm'
+                      ? 'bg-emerald-500 text-white shadow-sm'
                       : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
                       }`}
                   >
@@ -169,7 +168,7 @@ export function GradesTab({
                       key={subject}
                       onClick={() => setSelectedSubject(subject)}
                       className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${selectedSubject === subject
-                        ? 'bg-blue-500 text-white shadow-sm'
+                        ? 'bg-emerald-500 text-white shadow-sm'
                         : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
                         }`}
                     >
@@ -197,7 +196,7 @@ export function GradesTab({
                       <div className="flex items-center gap-3 ml-4">
                         <div className="w-20 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                           <div
-                            className={`h-2 rounded-full transition-all duration-300 ${average >= 4 ? 'bg-green-500' : average >= 3 ? 'bg-yellow-500' : 'bg-red-500'
+                            className={`h-2 rounded-full  ${average >= 4 ? 'bg-green-500' : average >= 3 ? 'bg-yellow-500' : 'bg-red-500'
                               }`}
                             style={{ width: `${(average / 5) * 100}%` }}
                           ></div>
@@ -222,7 +221,7 @@ export function GradesTab({
           {recognitions.length > 0 && (
             <div className="mb-6">
               <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <Award className="h-5 w-5" />
+                
                 Dicséret és Figyelmeztetés
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -237,9 +236,9 @@ export function GradesTab({
                   >
                     <div className="flex items-start gap-3">
                       {recognition.type === 'praise' ? (
-                        <Star className="h-5 w-5 text-green-600 mt-0.5" />
+                        <img src="/LuminéLogo.png" alt="Dicséret" className="w-6 h-6 object-contain" />
                       ) : (
-                        <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
+                        <img src="/LuminéLogo.png" alt="Figyelmeztetés" className="w-6 h-6 object-contain grayscale opacity-50" />
                       )}
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
@@ -296,17 +295,17 @@ export function GradesTab({
                   <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 lg:grid-cols-15 gap-3">
                     {subjectGrades.map((grade, index) => (
                       <div key={index} className="group relative flex flex-col items-center">
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold cursor-pointer shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 ${
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold cursor-pointer shadow-md hover:shadow-lg   ${
                           grade.type === 'monthly' 
-                            ? (grade.subject === 'Szorgalom' ? 'bg-purple-500 hover:bg-purple-600' : 'bg-indigo-500 hover:bg-indigo-600')
+                            ? (grade.subject === 'Szorgalom' ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-emerald-500 hover:bg-emerald-600')
                             : ((grade.grade || 0) >= 4 ? 'bg-green-500 hover:bg-green-600' :
                               (grade.grade || 0) >= 3 ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-red-500 hover:bg-red-600')
                           }`}>
-                          {grade.type === 'monthly' && grade.subject === 'Szorgalom' && <Heart className="h-4 w-4" />}
-                          {grade.type === 'monthly' && grade.subject === 'Magatartás' && <Star className="h-4 w-4" />}
+                          {grade.type === 'monthly' && grade.subject === 'Szorgalom' && <img src="/LuminéLogo.png" className="w-6 h-6 object-contain" />}
+                          {grade.type === 'monthly' && grade.subject === 'Magatartás' && <img src="/LuminéLogo.png" className="w-6 h-6 object-contain" />}
                           {grade.type !== 'monthly' && (grade.grade || 'N/A')}
                           {grade.type === 'monthly' && (
-                            <span className="absolute -bottom-1 -right-1 bg-white text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                            <span className="absolute -bottom-1 -right-1 bg-white text-black text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
                               {grade.grade}
                             </span>
                           )}

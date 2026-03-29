@@ -127,7 +127,7 @@ export function TeacherBehaviorTab({ user, allUsers, selectedClass, showAlert, c
             />
           </div>
 
-          <Button onClick={handleSubmit} className="w-full bg-blue-600 hover:bg-blue-700">
+          <Button onClick={handleSubmit} className="w-full bg-emerald-600 hover:bg-emerald-700">
             Rögzítés
           </Button>
         </CardContent>

@@ -3,8 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import { Input } from '@/shared/components/ui/input'
 import { Badge } from '@/shared/components/ui/badge'
-import { UserIcon, BookOpen } from 'lucide-react'
-
 interface AdminDashboardProps {
   allUsers: any[]
   teacherSearch: string
@@ -25,7 +23,7 @@ export function AdminDashboard({
       <Card className="border-none shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center text-lg">
-            <UserIcon className="h-5 w-5 mr-2 text-blue-600" />
+            
             Tanárok
           </CardTitle>
           <Input
@@ -50,7 +48,7 @@ export function AdminDashboard({
                 <div key={index} className="p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:shadow-sm transition-shadow">
                   <h4 className="font-semibold text-gray-900 dark:text-white">{teacher.fullName || teacher.name}</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{teacher.email}</p>
-                  {teacher.subject && <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">Tantárgy: {teacher.subject}</p>}
+                  {teacher.subject && <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">Tantárgy: {teacher.subject}</p>}
                 </div>
               ))}
           </div>
@@ -60,7 +58,7 @@ export function AdminDashboard({
       <Card className="border-none shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center text-lg">
-            <BookOpen className="h-5 w-5 mr-2 text-green-600" />
+            
             Diákok
           </CardTitle>
           <Input
@@ -87,7 +85,7 @@ export function AdminDashboard({
                     <div>
                       <h4 className="font-semibold text-gray-900 dark:text-white">{student.fullName || student.name}</h4>
                       <p className="text-sm text-gray-600 dark:text-gray-400">{student.email}</p>
-                      {student.class && <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">Osztály: {student.class}</p>}
+                      {student.class && <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">Osztály: {student.class}</p>}
                     </div>
                     {student.role === 'dj' && <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">DJ</Badge>}
                   </div>

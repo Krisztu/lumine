@@ -8,7 +8,7 @@ import { Badge } from '@/shared/components/ui/badge'
 import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
 import { Modal } from '@/shared/components/ui/modal'
-import { Calendar, Clock, User as UserIcon, Users, Plus, Edit, X } from 'lucide-react'
+import { Plus, Edit, X } from 'lucide-react'
 import { User } from '@/shared/types'
 
 import { SUBJECTS } from '@/shared/utils/subjects'
@@ -58,11 +58,21 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
         setSchedule(lessons)
       }
 
-      const changesResponse = await fetch(`/api/admin/schedule-changes?date=${selectedDate}`)
-      if (changesResponse.ok) {
-        const changes = await changesResponse.json()
-        setScheduleChanges(changes)
-      }
+      const exactMonday = new Date(selectedDate)
+      const currentDayOfWeek = exactMonday.getDay() || 7
+      exactMonday.setDate(exactMonday.getDate() - currentDayOfWeek + 1)
+      
+      const changesPromises = [0, 1, 2, 3, 4].map(i => {
+         const d = new Date(exactMonday)
+         d.setDate(d.getDate() + i)
+         d.setMinutes(d.getMinutes() - d.getTimezoneOffset())
+         const dateStr = d.toISOString().split('T')[0]
+         return fetch(`/api/admin/schedule-changes?date=${dateStr}&t=${Date.now()}`, { cache: 'no-store' })
+           .then(res => res.ok ? res.json() : [])
+      })
+      
+      const changesResults = await Promise.all(changesPromises)
+      setScheduleChanges(changesResults.flat())
     } catch (error) {
       console.error('Failed to load schedule:', error)
     } finally {
@@ -87,7 +97,12 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
       const currentDate = new Date(selectedDate)
       const changeDayName = changeDate.toLocaleDateString('hu-HU', { weekday: 'long' })
       const dayMap: Record<string, string> = { 'hétfő': 'Hétfő', 'kedd': 'Kedd', 'szerda': 'Szerda', 'csütörtök': 'Csütörtök', 'péntek': 'Péntek' }
-      return dayMap[changeDayName.toLowerCase()] === day && changeDate.toDateString() === currentDate.toDateString()
+      
+      const isCorrectDateAndDay = dayMap[changeDayName.toLowerCase()] === day
+      if (!isCorrectDateAndDay) return false
+
+      const currentTargetId = selectedType === 'user' ? selectedUser : 'class_' + selectedClass
+      return change.teacherId === currentTargetId || (selectedType === 'class' && change.newClass === selectedClass)
     })
 
     return timeSlots.map(time => {
@@ -124,8 +139,20 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
     })
   }
 
-  const openLessonDialog = (day: string, time: string, action: 'add' | 'edit', lesson?: any) => {
-    setDialogData({ day, time, action, lesson })
+  const getExactDateForDay = (targetDayName: string) => {
+    const selected = new Date(selectedDate)
+    const currentDayOfWeek = selected.getDay() || 7 // 1=hétfő, 7=vasárnap
+    const dayMapReverse: Record<string, number> = { 'Hétfő': 1, 'Kedd': 2, 'Szerda': 3, 'Csütörtök': 4, 'Péntek': 5 }
+    const targetDayOfWeek = dayMapReverse[targetDayName]
+    const diff = targetDayOfWeek - currentDayOfWeek
+    const exactDate = new Date(selected)
+    exactDate.setDate(selected.getDate() + diff)
+    exactDate.setMinutes(exactDate.getMinutes() - exactDate.getTimezoneOffset())
+    return exactDate.toISOString().split('T')[0]
+  }
+
+  const openLessonDialog = (day: string, time: string, action: 'add' | 'edit', lesson?: any, targetDate?: string) => {
+    setDialogData({ day, time, action, lesson, targetDate })
     if (lesson) {
       setNewLesson({
         subject: lesson.subject || '',
@@ -174,9 +201,11 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
         handleLessonAction(day, time, 'substitute', {
           subject: newLesson.subject,
           teacher: newLesson.teacher,
-          class: selectedClass,
+          class: dialogData.lesson?.className || selectedClass,
+          originalTeacher: dialogData.lesson?.teacherName || '',
+          originalClass: dialogData.lesson?.className || selectedClass,
           room: newLesson.room
-        })
+        }, dialogData.targetDate)
         setIsDialogOpen(false)
       }
     } catch (error) {
@@ -221,7 +250,7 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
     }
   }
 
-  const handleLessonAction = async (day: string, timeSlot: string, action: 'cancel' | 'substitute' | 'add', lessonData?: any) => {
+  const handleLessonAction = async (day: string, timeSlot: string, action: 'cancel' | 'substitute' | 'add', lessonData?: any, targetDate?: string) => {
     try {
       // Csak lemondás és helyettesítés esetén használjuk a schedule-changes API-t
       if (action === 'cancel' || action === 'substitute') {
@@ -229,12 +258,14 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
 
         const changeData = {
           teacherId: targetUserId || 'class_' + selectedClass,
-          date: selectedDate,
+          date: targetDate || selectedDate,
           timeSlot,
           changeType: action === 'cancel' ? 'cancelled' : 'substituted',
+          originalTeacher: lessonData?.originalTeacher || '',
+          originalClass: lessonData?.originalClass || selectedClass,
           newSubject: lessonData?.subject || '',
           newTeacher: lessonData?.teacher || '',
-          newClass: lessonData?.class || selectedClass,
+          newClass: lessonData?.class || (lessonData?.className || selectedClass),
           newRoom: lessonData?.room || ''
         }
 
@@ -257,7 +288,7 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
     switch (status) {
       case 'cancelled': return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
       case 'substituted': return 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200'
-      case 'added': return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200'
+      case 'added': return 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
       case 'free': return 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-400'
       default: return 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'
     }
@@ -268,7 +299,7 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
       <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <Calendar className="h-5 w-5 text-blue-600" />
+            
             Interaktív Órarend Kezelő
           </CardTitle>
           <p className="text-sm text-gray-600 dark:text-gray-400">Válassz felhasználót vagy osztályt az órarend megtekintéséhez és szerkesztéséhez</p>
@@ -284,13 +315,13 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
                 <SelectContent>
                   <SelectItem value="user">
                     <div className="flex items-center gap-2">
-                      <UserIcon className="h-4 w-4" />
+                      
                       Egyéni órarend
                     </div>
                   </SelectItem>
                   <SelectItem value="class">
                     <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" />
+                      
                       Osztály órarend
                     </div>
                   </SelectItem>
@@ -338,12 +369,30 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
             )}
 
             <div>
-              <label className="text-sm font-medium mb-2 block text-gray-700 dark:text-gray-300">Dátum</label>
+              <label className="text-sm font-medium mb-2 block text-gray-700 dark:text-gray-300">Hét kiválasztása</label>
               <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                type="week"
+                value={(() => {
+                  const d = new Date(selectedDate);
+                  const date = new Date(d.getTime());
+                  date.setHours(0, 0, 0, 0);
+                  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+                  const week1 = new Date(date.getFullYear(), 0, 4);
+                  const weekNum = 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+                  return `${date.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
+                })()}
+                onChange={(e) => {
+                  if (!e.target.value) return;
+                  const [yearStr, weekStr] = e.target.value.split('-W');
+                  const targetYear = parseInt(yearStr, 10);
+                  const targetWeek = parseInt(weekStr, 10);
+                  const date = new Date(targetYear, 0, 4);
+                  const day = date.getDay() || 7;
+                  date.setDate(date.getDate() - day + 1 + (targetWeek - 1) * 7);
+                  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+                  setSelectedDate(date.toISOString().split('T')[0]);
+                }}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:text-white"
               />
             </div>
           </div>
@@ -354,7 +403,7 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Clock className="h-5 w-5 text-green-600" />
+              
               {new Date(selectedDate).toLocaleDateString('hu-HU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </CardTitle>
             <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -369,7 +418,7 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
                   Időpont
                 </div>
                 {days.map(day => (
-                  <div key={day} className="font-semibold text-center py-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-blue-700 dark:text-blue-300">
+                  <div key={day} className="font-semibold text-center py-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg text-emerald-700 dark:text-emerald-300">
                     {day}
                   </div>
                 ))}
@@ -381,18 +430,19 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
                     </div>
                     {days.map(day => {
                       const lesson = getDaySchedule(day).find(l => l.startTime === time)
+
                       return (
                         <div key={`${day}-${time}`} className={`p-3 rounded-lg border-2 min-h-[100px] transition-all hover:shadow-md ${getLessonStatusColor(lesson?.status || 'normal')}`}>
                           {lesson?.status === 'free' ? (
                             <div className="flex items-center justify-center h-full">
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => openLessonDialog(day, time, 'add')}
-                                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-3 h-10 w-10"
-                              >
-                                <Plus className="h-6 w-6" />
-                              </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => openLessonDialog(day, time, 'add', undefined, getExactDateForDay(day))}
+                                  className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-3 h-10 w-10"
+                                >
+                                  <Plus className="h-6 w-6" />
+                                </Button>
                             </div>
                           ) : (
                             <div className="space-y-2">
@@ -406,35 +456,35 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
                                       lesson.status === 'added' ? 'Új óra' : ''}
                                 </Badge>
                               )}
-                              <div className="flex gap-2 mt-2">
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => handleLessonAction(day, time, 'cancel')}
-                                  className="p-2 h-9 w-9 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/20 rounded-md"
-                                  title="Óra lemondása (csak ezen a napon)"
-                                >
-                                  <X className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => handleDeleteLesson(day, time, lesson)}
-                                  className="p-2 h-9 w-9 hover:bg-red-200 hover:text-red-700 dark:hover:bg-red-800/30 rounded-md"
-                                  title="Óra teljes törlése (minden hétről)"
-                                >
-                                  <X className="h-4 w-4" strokeWidth={3} />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => openLessonDialog(day, time, 'edit', lesson)}
-                                  className="p-2 h-9 w-9 hover:bg-yellow-100 hover:text-yellow-600 dark:hover:bg-yellow-900/20 rounded-md"
-                                  title="Óra módosítása"
-                                >
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                              </div>
+                                <div className="flex gap-2 mt-2">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => handleLessonAction(day, time, 'cancel', { originalTeacher: lesson.teacherName, originalClass: lesson.className || selectedClass }, getExactDateForDay(day))}
+                                    className="p-2 h-9 w-9 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/20 rounded-md"
+                                    title="Óra lemondása (csak ezen a napon)"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => handleDeleteLesson(day, time, lesson)}
+                                    className="p-2 h-9 w-9 hover:bg-red-200 hover:text-red-700 dark:hover:bg-red-800/30 rounded-md"
+                                    title="Óra teljes törlése (minden hétről)"
+                                  >
+                                    <X className="h-4 w-4" strokeWidth={3} />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => openLessonDialog(day, time, 'edit', lesson, getExactDateForDay(day))}
+                                    className="p-2 h-9 w-9 hover:bg-yellow-100 hover:text-yellow-600 dark:hover:bg-yellow-900/20 rounded-md"
+                                    title="Óra módosítása"
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                </div>
                             </div>
                           )}
                         </div>
@@ -464,7 +514,7 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
 
               {/* Kiválasztott nap órái */}
               <div className="space-y-2">
-                <h3 className="font-semibold text-lg py-2 px-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-blue-700 dark:text-blue-300">
+                <h3 className="font-semibold text-lg py-2 px-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg text-emerald-700 dark:text-emerald-300">
                   {selectedDay || days[0]}
                 </h3>
                 <div className="space-y-2">
@@ -484,7 +534,7 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => openLessonDialog(selectedDay || days[0], lesson.startTime, 'add')}
+                          onClick={() => openLessonDialog(selectedDay || days[0], lesson.startTime, 'add', undefined, getExactDateForDay(selectedDay || days[0]))}
                           className="w-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                           <Plus className="h-5 w-5 mr-2" />
@@ -499,7 +549,7 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleLessonAction(selectedDay || days[0], lesson.startTime, 'cancel')}
+                              onClick={() => handleLessonAction(selectedDay || days[0], lesson.startTime, 'cancel', { originalTeacher: lesson.teacherName, originalClass: lesson.className || selectedClass }, getExactDateForDay(selectedDay || days[0]))}
                               className="flex-1 text-xs"
                             >
                               <X className="h-4 w-4 mr-1" />
@@ -517,7 +567,7 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => openLessonDialog(selectedDay || days[0], lesson.startTime, 'edit', lesson)}
+                              onClick={() => openLessonDialog(selectedDay || days[0], lesson.startTime, 'edit', lesson, getExactDateForDay(selectedDay || days[0]))}
                               className="flex-1 text-xs"
                             >
                               <Edit className="h-4 w-4 mr-1" />
@@ -539,7 +589,7 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
           <CardContent className="py-12">
             <div className="text-center text-gray-500 dark:text-gray-400">
-              <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              
               <p className="text-lg font-medium mb-2">Válassz felhasználót vagy osztályt</p>
               <p className="text-sm">Az órarend megtekintéséhez és szerkesztéséhez válassz egy felhasználót vagy osztályt a fenti menüből.</p>
             </div>
@@ -582,11 +632,13 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
                   if (!newLesson.subject) return true
                   return (teacher.subject === newLesson.subject) || 
                          (teacher.subjects && teacher.subjects.includes(newLesson.subject))
-                }).map(teacher => (
-                  <SelectItem key={teacher.id || teacher.email} value={teacher.fullName || teacher.name}>
-                    {teacher.fullName || teacher.name}
+                }).map(teacher => {
+                  const teacherName = teacher.fullName || teacher.name || 'Ismeretlen tanár'
+                  return (
+                  <SelectItem key={teacher.id || teacher.email} value={teacherName}>
+                    {teacherName}
                   </SelectItem>
-                ))}
+                )})}
               </SelectContent>
             </Select>
           </div>

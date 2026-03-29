@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import { Skeleton } from '@/shared/components/ui/skeleton'
-import { BookOpen, UserIcon, Camera } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 interface ProfileTabProps {
@@ -65,10 +64,10 @@ export function ProfileTab({
   const getRoleColor = (role: string) => {
     switch (role) {
       case 'admin': return 'from-red-500 via-red-600 to-red-700'
-      case 'homeroom_teacher': return 'from-purple-500 via-purple-600 to-purple-700'
-      case 'teacher': return 'from-indigo-500 via-indigo-600 to-indigo-700'
+      case 'homeroom_teacher': return 'from-emerald-500 via-teal-600 to-emerald-700'
+      case 'teacher': return 'from-emerald-500 via-cyan-600 to-emerald-700'
       case 'dj': return 'from-yellow-500 via-yellow-600 to-orange-600'
-      default: return 'from-blue-500 via-blue-600 to-blue-700'
+      default: return 'from-emerald-500 via-emerald-600 to-emerald-700'
     }
   }
 
@@ -88,20 +87,20 @@ export function ProfileTab({
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case 'admin': return 'bg-red-500/30 border border-red-300/50'
-      case 'homeroom_teacher': return 'bg-purple-500/30 border border-purple-300/50'
-      case 'teacher': return 'bg-indigo-500/30 border border-indigo-300/50'
+      case 'homeroom_teacher': return 'bg-emerald-500/30 border border-emerald-300/50'
+      case 'teacher': return 'bg-emerald-500/30 border border-emerald-300/50'
       case 'dj': return 'bg-yellow-500/30 border border-yellow-300/50'
-      default: return 'bg-blue-500/30 border border-blue-300/50'
+      default: return 'bg-emerald-500/30 border border-emerald-300/50'
     }
   }
 
   const getRoleDotColor = (role: string) => {
     switch (role) {
       case 'admin': return 'bg-red-300'
-      case 'homeroom_teacher': return 'bg-purple-300'
-      case 'teacher': return 'bg-indigo-300'
+      case 'homeroom_teacher': return 'bg-emerald-300'
+      case 'teacher': return 'bg-emerald-300'
       case 'dj': return 'bg-yellow-300'
-      default: return 'bg-blue-300'
+      default: return 'bg-emerald-300'
     }
   }
 
@@ -125,7 +124,7 @@ export function ProfileTab({
                   )}
                 </div>
                 <label className="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer rounded-full hover:bg-black/60">
-                  <Camera className="w-8 h-8 drop-shadow-lg" />
+                  
                   <span className="sr-only">Kép feltöltése</span>
                   <input
                     type="file"
@@ -175,7 +174,7 @@ export function ProfileTab({
               ) : (
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
-                    <UserIcon className="h-5 w-5 text-gray-500" />
+                    
                     <div>
                       <p className="text-sm text-gray-500 dark:text-gray-400">Teljes név</p>
                       <p className="font-semibold text-gray-900 dark:text-white">{currentUser?.name || currentUser?.fullName || 'N/A'}</p>
@@ -233,7 +232,7 @@ export function ProfileTab({
               <CardContent className="space-y-4">
                 {currentUser?.class && (
                   <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
-                    <BookOpen className="h-5 w-5 text-gray-500" />
+                    
                     <div>
                       <p className="text-sm text-gray-500 dark:text-gray-400">Osztály</p>
                       <p className="font-semibold text-gray-900 dark:text-white">{currentUser.class}</p>

@@ -73,7 +73,7 @@ export default function QRScanPage() {
       case 'success': return 'bg-green-500'
       case 'error': return 'bg-red-500'
       case 'early': return 'bg-red-500'
-      default: return 'bg-blue-500'
+      default: return 'bg-emerald-500'
     }
   }
 

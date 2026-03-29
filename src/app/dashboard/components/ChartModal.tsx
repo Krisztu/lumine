@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal } from '@/shared/components/ui/modal';
-import { BarChart2 } from 'lucide-react';
+;
 
 interface Grade {
     subject?: string;
@@ -36,7 +36,7 @@ export function ChartModal({ isOpen, onClose, grades }: ChartModalProps) {
     const modalTitle = (
         <div>
             <div className="flex items-center gap-2">
-                <BarChart2 className="text-blue-600" />
+                
                 <span>Tantárgyak átlagai</span>
             </div>
             <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 font-normal">Részletes diagram nézet</p>
@@ -51,7 +51,7 @@ export function ChartModal({ isOpen, onClose, grades }: ChartModalProps) {
                     <button
                         onClick={() => setSelectedSubject(null)}
                         className={`px-6 py-3 rounded-lg text-base font-medium transition-all ${selectedSubject === null
-                            ? 'bg-blue-500 text-white shadow-md'
+                            ? 'bg-emerald-500 text-white shadow-md'
                             : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
                             }`}
                     >
@@ -62,7 +62,7 @@ export function ChartModal({ isOpen, onClose, grades }: ChartModalProps) {
                             key={subject}
                             onClick={() => setSelectedSubject(subject)}
                             className={`px-6 py-3 rounded-lg text-base font-medium transition-all ${selectedSubject === subject
-                                ? 'bg-blue-500 text-white shadow-md'
+                                ? 'bg-emerald-500 text-white shadow-md'
                                 : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
                                 }`}
                         >

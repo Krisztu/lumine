@@ -7,8 +7,6 @@ import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts'
-import { TrendingUp } from 'lucide-react'
-
 export function AdminStatisticsTab() {
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -87,7 +85,7 @@ export function AdminStatisticsTab() {
                     labelStyle={{ color: '#000' }}
                     contentStyle={{ backgroundColor: '#fff', border: '1px solid #ccc' }}
                   />
-                  <Bar dataKey="averageGrade" fill="#3b82f6" />
+                  <Bar dataKey="averageGrade" fill="#10b981" />
                 </BarChart>
               </ResponsiveContainer>
               <ResponsiveContainer width="100%" height={600} className="hidden sm:block">
@@ -100,7 +98,7 @@ export function AdminStatisticsTab() {
                     labelStyle={{ color: '#000' }}
                     contentStyle={{ backgroundColor: '#fff', border: '1px solid #ccc' }}
                   />
-                  <Bar dataKey="averageGrade" fill="#3b82f6" />
+                  <Bar dataKey="averageGrade" fill="#10b981" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -135,7 +133,7 @@ export function AdminStatisticsTab() {
                     labelLine={false}
                     label={({ name, value }) => `${name}: ${value}`}
                     outerRadius={100}
-                    fill="#8884d8"
+                    fill="#10b981"
                     dataKey="value"
                   >
                     {['#10b981', '#f59e0b', '#8b5cf6', '#ec4899'].map((color, index) => (
@@ -159,7 +157,7 @@ export function AdminStatisticsTab() {
                     labelLine={false}
                     label={({ name, value }) => `${name}: ${value}`}
                     outerRadius={240}
-                    fill="#8884d8"
+                    fill="#10b981"
                     dataKey="value"
                   >
                     {['#10b981', '#f59e0b', '#8b5cf6', '#ec4899'].map((color, index) => (
@@ -200,7 +198,7 @@ export function AdminStatisticsTab() {
                     labelLine={false}
                     label={({ name, value }) => `${name}: ${value}`}
                     outerRadius={100}
-                    fill="#8884d8"
+                    fill="#10b981"
                     dataKey="value"
                   >
                     {['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e'].map((color, index) => (
@@ -225,7 +223,7 @@ export function AdminStatisticsTab() {
                     labelLine={false}
                     label={({ name, value }) => `${name}: ${value}`}
                     outerRadius={240}
-                    fill="#8884d8"
+                    fill="#10b981"
                     dataKey="value"
                   >
                     {['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e'].map((color, index) => (
@@ -247,11 +245,11 @@ export function AdminStatisticsTab() {
 
 function StatCard({ title, value, color = 'blue' }: any) {
   const colorClasses: Record<string, string> = {
-    blue: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
+    blue: 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800',
     green: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
     red: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
     orange: 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800',
-    purple: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800',
+    purple: 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800',
     pink: 'bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800'
   }
 

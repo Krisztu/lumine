@@ -3,8 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/components/ui/table'
 import { ResponsiveTable, MobileTable } from '@/shared/components/ui/mobile-table'
-import { Calendar, BookOpen } from 'lucide-react'
-
 interface StudentDashboardProps {
   lessons: any[]
   grades: any[]
@@ -82,7 +80,7 @@ export function StudentDashboard({
       <Card className="border-none shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center text-sm sm:text-lg">
-            <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-blue-600" />
+            
             <span className="text-xs sm:text-base">Mai órák - {new Date().toLocaleDateString('hu-HU', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
           </CardTitle>
         </CardHeader>
@@ -162,7 +160,7 @@ export function StudentDashboard({
       <Card className="border-none shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center text-sm sm:text-lg">
-            <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-green-600" />
+            
             <span className="text-xs sm:text-base">{userRole === 'teacher' ? 'Általam adott jegyek' : 'Legutóbbi jegyek'}</span>
           </CardTitle>
         </CardHeader>
