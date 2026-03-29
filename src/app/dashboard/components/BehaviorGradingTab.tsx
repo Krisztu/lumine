@@ -134,12 +134,12 @@ export function BehaviorGradingTab({ currentUser, allUsers, showAlert }: Behavio
           subject: gradeType,
           grade: parseInt(grade),
           title: `${gradeType.charAt(0).toUpperCase() + gradeType.slice(1)} - ${selectedMonth.split('-')[1]}. hónap`,
-          description: behaviorComments[gradeType][grade as keyof typeof behaviorComments[typeof gradeType]],
+          description: (behaviorComments[gradeType] as any)[grade],
           teacherId: currentUser.id,
           teacherName: currentUser.fullName || currentUser.name,
           date: new Date().toISOString(),
           type: selectedMonth,
-          comment: behaviorComments[gradeType][grade as keyof typeof behaviorComments[typeof gradeType]],
+          comment: (behaviorComments[gradeType] as any)[grade],
           className: currentUser.class,
           isBehaviorGrade: true
         }
@@ -362,7 +362,7 @@ export function BehaviorGradingTab({ currentUser, allUsers, showAlert }: Behavio
 
           <div>
             <label className="block text-sm font-medium mb-2">
-              Diákok jegyei ({Object.values(studentGrades).filter(grade => grade && grade !== '').length}/{students.length} diák)
+              Diákok jegyei ({(Object.values(studentGrades) as string[]).filter(grade => grade && grade !== '').length}/{students.length} diák)
             </label>
             <div className="border border-gray-300 rounded-md p-3 max-h-96 overflow-y-auto dark:border-gray-600">
               <div className="space-y-3">

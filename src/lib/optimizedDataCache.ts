@@ -33,7 +33,7 @@ class OptimizedDataCache {
     const duration = cacheDuration || this.CACHE_DURATION
 
     if (cached && now - cached.timestamp < duration && cacheDuration !== 0) {
-      return cached.data
+      return cached.data as T
     }
 
     if (useRealtime && !this.unsubscribers.has(key)) {
@@ -48,7 +48,7 @@ class OptimizedDataCache {
       return data
     } catch (error) {
       if (cached) {
-        return cached.data
+        return cached.data as T
       }
       throw error
     }
@@ -70,7 +70,7 @@ class OptimizedDataCache {
     const cached = this.cache.get(key)
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
       return {
-        data: cached.data,
+        data: cached.data as T[],
         hasMore: state.hasMore,
         loadMore: () => this.loadMorePaginated(key, collectionName, constraints, pageSize)
       }
@@ -167,7 +167,7 @@ class OptimizedDataCache {
     keys.forEach((key, index) => {
       const cached = this.cache.get(key)
       if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-        results[index] = cached.data
+        results[index] = cached.data as T
       } else {
         uncachedIndices.push(index)
         uncachedFetchers.push(fetchers[index])
@@ -175,7 +175,7 @@ class OptimizedDataCache {
     })
 
     if (uncachedFetchers.length > 0) {
-      const uncachedResults = await Promise.all(uncachedFetchers)
+      const uncachedResults = await Promise.all(uncachedFetchers.map(f => f()))
       
       uncachedIndices.forEach((originalIndex, uncachedIndex) => {
         const data = uncachedResults[uncachedIndex]
@@ -191,7 +191,7 @@ class OptimizedDataCache {
     const entry = this.cache.get(key)
     if (entry) {
       entry.subscribers.add(callback)
-      callback(entry.data)
+      callback(entry.data as T)
     }
 
     return () => {
@@ -202,12 +202,12 @@ class OptimizedDataCache {
     }
   }
 
-  private setupRealtimeListener(key: string, fetcher: () => Promise<any>): void {
+  private setupRealtimeListener<T>(key: string, fetcher: () => Promise<T>): void {
     return
   }
 
   private evictOldestEntries(): void {
-    const entries = Array.from(this.cache.entries())
+    const entries = Array.from(this.cache.entries()) as [string, CacheEntry<any>][]
     entries.sort((a, b) => a[1].timestamp - b[1].timestamp)
     
     const toRemove = Math.floor(entries.length * 0.2)

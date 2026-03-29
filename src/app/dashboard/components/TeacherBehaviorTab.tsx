@@ -25,7 +25,7 @@ export function TeacherBehaviorTab({ user, allUsers, selectedClass, showAlert, c
     }
 
     try {
-      const student = allUsers.find(u => u.id === form.studentId)
+      const student = allUsers.find((u: any) => u.id === form.studentId)
       
       const response = await fetch('/api/behavior', {
         method: 'POST',
@@ -34,8 +34,8 @@ export function TeacherBehaviorTab({ user, allUsers, selectedClass, showAlert, c
         },
         body: JSON.stringify({
           studentId: form.studentId,
-          studentName: student?.fullName || student?.name,
-          studentClass: student?.class,
+          studentName: student?.fullName || student?.name || 'N/A',
+          studentClass: student?.class || 'N/A',
           type: form.type,
           level: form.level,
           description: form.description,

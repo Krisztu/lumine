@@ -87,6 +87,16 @@ export function GradesTab({
   const academicAverage = academicGrades.length > 0 
     ? (academicGrades.reduce((sum, grade) => sum + (grade.grade || 0), 0) / academicGrades.length).toFixed(2)
     : '0.00'
+
+  const groupedGrades = allGrades.reduce((acc, grade) => {
+    const subject = grade.subject || 'Egyéb'
+    if (!acc[subject]) acc[subject] = []
+    acc[subject].push(grade)
+    return acc
+  }, {} as Record<string, any[]>)
+
+  const groupedGradesEntries = Object.entries(groupedGrades) as [string, any[]][]
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
       <Card className="lg:col-span-1">
@@ -109,15 +119,8 @@ export function GradesTab({
               <h4 className="font-medium mb-3 text-center">Tantárgyak átlagai</h4>
               <div className="relative h-48">
                 <svg viewBox="0 0 400 120" className="w-full h-full">
-                  {Object.entries(
-                    allGrades.reduce((acc, grade) => {
-                      const subject = grade.subject || 'Egyéb'
-                      if (!acc[subject]) acc[subject] = []
-                      acc[subject].push(grade)
-                      return acc
-                    }, {} as Record<string, any[]>)
-                  ).slice(0, 10).map(([subject, subjectGrades]: [string, any[]], index: number) => {
-                    const average = subjectGrades.reduce((sum, grade) => sum + (grade.grade || 0), 0) / subjectGrades.length
+                  {groupedGradesEntries.slice(0, 10).map(([subject, subjectGrades], index: number) => {
+                    const average = subjectGrades.reduce((sum: number, grade: any) => sum + (grade.grade || 0), 0) / subjectGrades.length
                     const barHeight = (average / 5) * 80
                     const x = 30 + index * 35
                     const color = average >= 4 ? '#10b981' : average >= 3 ? '#f59e0b' : '#ef4444'
@@ -157,13 +160,7 @@ export function GradesTab({
                   >
                     Összes
                   </button>
-                  {Object.keys(
-                    allGrades.reduce((acc, grade) => {
-                      const subject = grade.subject || 'Egyéb'
-                      acc[subject] = true
-                      return acc
-                    }, {} as Record<string, boolean>)
-                  ).map(subject => (
+                  {Object.keys(groupedGrades).map(subject => (
                     <button
                       key={subject}
                       onClick={() => setSelectedSubject(subject)}
@@ -178,15 +175,8 @@ export function GradesTab({
                 </div>
               </div>
               <div className="space-y-2">
-                {Object.entries(
-                  allGrades.reduce((acc, grade) => {
-                    const subject = grade.subject || 'Egyéb'
-                    if (!acc[subject]) acc[subject] = []
-                    acc[subject].push(grade)
-                    return acc
-                  }, {} as Record<string, any[]>)
-                ).filter(([subject]) => selectedSubject === null || subject === selectedSubject).map(([subject, subjectGrades]: [string, any[]]) => {
-                  const average = subjectGrades.reduce((sum, grade) => sum + (grade.grade || 0), 0) / subjectGrades.length
+                {groupedGradesEntries.filter(([subject]) => selectedSubject === null || subject === selectedSubject).map(([subject, subjectGrades]) => {
+                  const average = subjectGrades.reduce((sum: number, grade: any) => sum + (grade.grade || 0), 0) / subjectGrades.length
                   return (
                     <div key={subject} className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
                       <div className="flex-1 min-w-0">
@@ -271,15 +261,8 @@ export function GradesTab({
           )}
 
           <div className="space-y-6">
-            {Object.entries(
-              allGrades.reduce((acc, grade) => {
-                const subject = grade.subject || 'Egyéb'
-                if (!acc[subject]) acc[subject] = []
-                acc[subject].push(grade)
-                return acc
-              }, {} as Record<string, any[]>)
-            ).filter(([subject]) => selectedSubject === null || subject === selectedSubject).map(([subject, subjectGrades]: [string, any[]]) => {
-              const average = subjectGrades.reduce((sum, grade) => sum + (grade.grade || 0), 0) / subjectGrades.length
+            {groupedGradesEntries.filter(([subject]) => selectedSubject === null || subject === selectedSubject).map(([subject, subjectGrades]) => {
+              const average = subjectGrades.reduce((sum: number, grade: any) => sum + (grade.grade || 0), 0) / subjectGrades.length
               return (
                 <div key={subject} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between mb-4">

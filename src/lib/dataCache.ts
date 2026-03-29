@@ -21,7 +21,7 @@ class DataCache {
     const now = Date.now()
 
     if (cached && now - cached.timestamp < this.CACHE_DURATION) {
-      return cached.data
+      return cached.data as T
     }
 
     if (useRealtime && !this.unsubscribers.has(key)) {
@@ -49,7 +49,7 @@ class DataCache {
     const entry = this.cache.get(key)
     if (entry) {
       entry.subscribers.add(callback)
-      callback(entry.data)
+      callback(entry.data as T)
     }
 
     return () => {

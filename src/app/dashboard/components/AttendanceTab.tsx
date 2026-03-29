@@ -38,9 +38,9 @@ export function AttendanceTab({
               return acc
             }, {} as Record<string, any[]>)
 
-            return Object.entries(attendanceByDate)
+            return (Object.entries(attendanceByDate) as [string, any[]][])
               .sort(([a], [b]) => new Date(b).getTime() - new Date(a).getTime())
-              .map(([date, records]: [string, any[]]) => {
+              .map(([date, records]) => {
                 const isExpanded = expandedDates[date] || false
 
                 return (

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/firebase-admin'
+import { Query } from 'firebase-admin/firestore'
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,7 +10,7 @@ export async function GET(request: NextRequest) {
     const month = searchParams.get('month')
     const year = searchParams.get('year')
 
-    let behaviorQuery: FirebaseFirestore.Query = db.collection('monthlyBehavior')
+    let behaviorQuery: Query = db.collection('monthlyBehavior')
 
     if (studentId) {
       behaviorQuery = behaviorQuery.where('studentId', '==', studentId)

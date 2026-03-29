@@ -575,7 +575,7 @@ export default function Dashboard() {
       })
 
       if (response.ok) {
-        setCurrentUser(prev => prev ? { ...prev, profileImage: imageUrl } : null)
+        setCurrentUser((prev: any) => prev ? { ...prev, profileImage: imageUrl } : null)
         showAlert('Profilkép sikeresen frissítve!', 'success')
       } else {
         const errorData = await response.json()
@@ -793,9 +793,9 @@ export default function Dashboard() {
                 }}
                 setSelectedHomework={() => {}}
                 setShowHomeworkModal={() => {}}
-                fillEmptyPeriods={(lessons) => {
+                fillEmptyPeriods={(lessons: any[]) => {
                   const timeSlots = ['7:45', '8:45', '9:45', '10:45', '11:45', '12:45', '13:45', '14:45']
-                  const sortedLessons = lessons.sort((a, b) => {
+                  const sortedLessons = [...lessons].sort((a: any, b: any) => {
                     const timeA = timeSlots.indexOf(a.StartTime)
                     const timeB = timeSlots.indexOf(b.StartTime)
                     return timeA - timeB

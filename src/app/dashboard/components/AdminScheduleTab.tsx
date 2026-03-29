@@ -38,7 +38,7 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
   const timeSlots = ['7:45', '8:45', '9:45', '10:45', '11:45', '12:45', '13:45', '14:45']
   const days = ['Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek']
   
-  const teachers = allUsers.filter(u => u.role === 'teacher' || u.role === 'homeroom_teacher')
+  const teachers = (allUsers as any[]).filter(u => u.role === 'teacher' || u.role === 'homeroom_teacher')
 
   const loadSchedule = async () => {
     if (!selectedUser && !selectedClass) return

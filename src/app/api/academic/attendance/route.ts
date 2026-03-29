@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/firebase-admin'
+import { Query } from 'firebase-admin/firestore'
 import { hasPermission } from '@/lib/permissions'
 
 export async function POST(request: NextRequest) {
@@ -75,7 +76,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(absences)
     }
 
-    let attendanceQuery: FirebaseFirestore.Query = db.collection('attendance')
+    let attendanceQuery: Query = db.collection('attendance')
 
     if (teacherId) {
       attendanceQuery = attendanceQuery.where('teacherId', '==', teacherId)

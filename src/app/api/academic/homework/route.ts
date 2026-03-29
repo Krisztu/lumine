@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/firebase-admin'
+import { Query } from 'firebase-admin/firestore'
 import { hasPermission } from '@/lib/permissions'
 
 export async function POST(request: NextRequest) {
@@ -51,7 +52,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Nincs jogosultság házi feladatok megtekintéséhez' }, { status: 403 })
     }
 
-    let homeworkQuery: FirebaseFirestore.Query = db.collection('homework')
+    let homeworkQuery: Query = db.collection('homework')
 
     if (className) {
       homeworkQuery = homeworkQuery.where('className', '==', className)

@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     const rateLimitKey = `${RATE_LIMIT_KEY}_${userId || clientIP}`
-    const currentRequests = await optimizedCache.get(rateLimitKey, async () => 0, true, 3600000)
+    const currentRequests = await optimizedCache.get<number>(rateLimitKey, async () => 0, true, 3600000)
     
     if (currentRequests >= MAX_REQUESTS_PER_HOUR) {
       return NextResponse.json({ error: 'Túl sok kérés. Próbálja újra 1 óra múlva.' }, { status: 429 })
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const docRef = await db.collection('musicRequests').add(sanitizedData)
     
     // Rate limit frissítése
-    optimizedCache.set(rateLimitKey, currentRequests + 1, 3600000)
+    optimizedCache.set(rateLimitKey, currentRequests + 1)
     
     optimizedCache.invalidate(MUSIC_CACHE_KEY)
 
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '25')
     const useCache = searchParams.get('cache') !== 'false'
     
-    return optimizedCache.get(
+    const requests = await optimizedCache.get(
       MUSIC_CACHE_KEY,
       async () => {
         const snapshot = await db.collection('musicRequests')
@@ -74,7 +74,9 @@ export async function GET(request: NextRequest) {
       },
       false,
       useCache ? CACHE_DURATION : 0
-    ).then((requests: any) => NextResponse.json(requests))
+    )
+    
+    return NextResponse.json(requests)
   } catch (error) {
     console.error('Music GET Error:', error)
     return NextResponse.json({ error: 'Nem sikerült lekérni a zenei kéréseket' }, { status: 500 })

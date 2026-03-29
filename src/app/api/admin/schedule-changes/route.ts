@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/firebase-admin'
+import { Query } from 'firebase-admin/firestore'
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
     const teacherId = searchParams.get('teacherId')
     const date = searchParams.get('date')
 
-    let changesQuery: FirebaseFirestore.Query = db.collection('schedule-changes')
+    let changesQuery: Query = db.collection('schedule-changes')
 
     if (teacherId && date) {
       changesQuery = changesQuery

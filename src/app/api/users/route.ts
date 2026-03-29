@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, db } from '@/lib/firebase-admin'
+import { Query } from 'firebase-admin/firestore'
 import { hasPermission } from '@/lib/permissions'
 
 const USERS_CACHE_DURATION = 10 * 60 * 1000
@@ -16,7 +17,9 @@ function getCachedData(key: string, duration: number = USERS_CACHE_DURATION) {
 function setCachedData(key: string, data: any) {
   if (memoryCache.size > 50) {
     const oldestKey = memoryCache.keys().next().value
-    memoryCache.delete(oldestKey)
+    if (oldestKey !== undefined) {
+      memoryCache.delete(oldestKey)
+    }
   }
   
   memoryCache.set(key, {
@@ -165,7 +168,7 @@ export async function GET(request: NextRequest) {
       }
     }
     
-    let query: FirebaseFirestore.Query = db.collection('users')
+    let query: Query = db.collection('users')
 
     if (queryRole) {
       query = query.where('role', '==', queryRole)

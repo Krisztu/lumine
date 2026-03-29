@@ -37,7 +37,7 @@ export function ExcusesTab({
       </CardHeader>
       <CardContent className="p-3 sm:p-6">
         <div className="space-y-3">
-          {Object.entries(groupedByDate).map(([date, records]) => (
+          {(Object.entries(groupedByDate) as [string, any[]][]).map(([date, records]) => (
             <div key={date} className="border border-white/10 rounded-lg overflow-hidden">
               <button
                 onClick={() => setExpandedDates({ ...expandedDates, [date]: !expandedDates[date] })}

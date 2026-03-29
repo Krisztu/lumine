@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/firebase-admin'
+import { Query } from 'firebase-admin/firestore'
 import { hasPermission } from '@/lib/permissions'
 
 export async function POST(request: NextRequest) {
@@ -64,7 +65,7 @@ export async function GET(request: NextRequest) {
     const classTeacher = searchParams.get('classTeacher')
     const studentId = searchParams.get('studentId')
 
-    let excusesQuery: FirebaseFirestore.Query = db.collection('excuses')
+    let excusesQuery: Query = db.collection('excuses')
 
     if (classTeacher) {
       excusesQuery = excusesQuery.where('studentClass', '==', classTeacher)

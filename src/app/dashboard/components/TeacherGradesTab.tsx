@@ -366,10 +366,10 @@ export function TeacherGradesTab({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {viewStudents.map(student => {
-                  const studentGrades = teacherGrades.filter(grade => grade.studentName === (student.fullName || student.name))
+                  const studentGrades = teacherGrades.filter((grade: any) => grade.studentName === (student.fullName || student.name))
                   
                   // Tantárgyak szerint csoportosítás
-                  const gradesBySubject = studentGrades.reduce((acc, grade) => {
+                  const gradesBySubject = studentGrades.reduce((acc: any, grade: any) => {
                     const subject = grade.subject || 'Egyéb'
                     if (!acc[subject]) acc[subject] = []
                     acc[subject].push(grade)
@@ -377,7 +377,7 @@ export function TeacherGradesTab({
                   }, {} as Record<string, any[]>)
                   
                   const overallAverage = studentGrades.length > 0 ?
-                    (studentGrades.reduce((sum, grade) => sum + (grade.grade || 0), 0) / studentGrades.length).toFixed(2) : '0.00'
+                    (studentGrades.reduce((sum: number, grade: any) => sum + (grade.grade || 0), 0) / studentGrades.length).toFixed(2) : '0.00'
 
                   return (
                     <div key={student.id || student.email} className="bg-white/5 border border-white/10 rounded-lg p-4">
@@ -401,8 +401,8 @@ export function TeacherGradesTab({
                         {Object.keys(gradesBySubject).length === 0 ? (
                           <div className="text-center text-xs text-gray-500 py-2">Nincs jegy</div>
                         ) : (
-                          Object.entries(gradesBySubject).map(([subject, subjectGrades]) => {
-                            const subjectAverage = (subjectGrades.reduce((sum, grade) => sum + (grade.grade || 0), 0) / subjectGrades.length).toFixed(1)
+                          (Object.entries(gradesBySubject) as [string, any[]][]).map(([subject, subjectGrades]) => {
+                            const subjectAverage = (subjectGrades.reduce((sum: number, grade: any) => sum + (grade.grade || 0), 0) / subjectGrades.length).toFixed(1)
                             return (
                               <div key={subject} className="bg-white dark:bg-gray-800 rounded p-2">
                                 <div className="flex items-center justify-between mb-1">

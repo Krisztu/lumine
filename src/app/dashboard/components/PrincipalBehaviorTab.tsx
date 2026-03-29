@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui
 import { Textarea } from '@/shared/components/ui/textarea'
 
 interface PrincipalBehaviorTabProps {
-  allUsers: Array<{ id: string; fullName: string; name: string; class: string }>
+  allUsers: Array<{ id: string; fullName: string; name: string; class: string; role: string }>
   showAlert: (message: string, type?: 'success' | 'error' | 'warning' | 'info', title?: string) => void
   onSuccess?: () => void
 }

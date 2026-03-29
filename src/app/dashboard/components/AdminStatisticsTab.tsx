@@ -7,7 +7,14 @@ import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts'
-export function AdminStatisticsTab() {
+interface AdminStatisticsTabProps {
+  allUsers: any[]
+  grades: any[]
+  attendance: any[]
+  lessons: any[]
+}
+
+export function AdminStatisticsTab({ allUsers, grades, attendance, lessons }: AdminStatisticsTabProps) {
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
