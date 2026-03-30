@@ -8,6 +8,8 @@ import { Loader2 } from 'lucide-react';
 interface Homework {
   id: string;
   title: string;
+  description: string;
+  subject: string;
 }
 
 interface SubmissionModalProps {
@@ -45,7 +47,18 @@ export function SubmissionModal({ isOpen, onClose, homework, onSubmit }: Submiss
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Házi feladat beadása" subtitle={homework.title}>
-      <div className="space-y-4">
+      <div className="space-y-6">
+        {/* Homework Description */}
+        <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-lg p-4">
+          <h4 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+            Feladat leírása
+          </h4>
+          <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed max-h-[30vh] overflow-y-auto pr-2">
+            {homework.description}
+          </div>
+        </div>
+
+        <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">Megoldás / Válasz:</label>
           <Textarea
@@ -89,6 +102,7 @@ export function SubmissionModal({ isOpen, onClose, homework, onSubmit }: Submiss
           >
             Mégse
           </Button>
+        </div>
         </div>
       </div>
     </Modal>

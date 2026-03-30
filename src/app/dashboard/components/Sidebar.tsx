@@ -95,14 +95,14 @@ export function Sidebar({
         `}
       >
         {/* Logo */}
-        <div className={`flex items-center gap-3 px-4 py-5 border-b border-border ${collapsed ? 'justify-center' : ''}`}>
+        <div className={`flex items-center gap-3 px-4 py-4 border-b border-border ${collapsed ? 'justify-center px-2' : ''}`}>
           <img
             src="/LuminéLogo.png"
             alt="Luminé Logo"
-            className="w-12 h-12 shrink-0 object-contain drop-shadow-sm  "
+            className={`${collapsed ? 'w-10 h-10' : 'w-12 h-12'} shrink-0 object-contain drop-shadow-md transition-all duration-300`}
           />
           {!collapsed && (
-            <span className="text-xl font-extrabold text-foreground tracking-tight">Luminé</span>
+            <span className="text-2xl font-black text-foreground tracking-tight leading-none">Luminé</span>
           )}
         </div>
 

@@ -36,9 +36,14 @@ export function HomeworkTab({
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  {isSubmitted && (
+                  {isSubmitted && submission?.status !== 'incomplete' && (
                     <Badge className="bg-green-500 hover:bg-green-600 text-white text-xs">
                       Beküldve
+                    </Badge>
+                  )}
+                  {submission?.status === 'incomplete' && (
+                    <Badge className="bg-red-500 hover:bg-red-600 text-white text-xs">
+                      Hiányos / Javítandó
                     </Badge>
                   )}
                   {isOverdue && !isSubmitted && (
@@ -55,7 +60,7 @@ export function HomeworkTab({
                   Határidő: {new Date(hw.dueDate).toLocaleDateString('hu-HU')}
                 </span>
                 <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                  {isSubmitted && (
+                  {isSubmitted && submission?.status !== 'incomplete' && (
                     <Button
                       size="sm"
                       variant="outline"
@@ -68,16 +73,16 @@ export function HomeworkTab({
                       Beadásom
                     </Button>
                   )}
-                  {!isSubmitted && !isOverdue && (
+                  {(!isSubmitted || submission?.status === 'incomplete') && !isOverdue && (
                     <Button
                       size="sm"
                       onClick={() => {
                         setSelectedHomework(hw)
                         setShowSubmissionModal(true)
                       }}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm w-full sm:w-auto"
+                      className={`${submission?.status === 'incomplete' ? 'bg-orange-500 hover:bg-orange-600' : 'bg-emerald-600 hover:bg-emerald-700'} text-white text-xs sm:text-sm w-full sm:w-auto`}
                     >
-                      Beküldés
+                      {submission?.status === 'incomplete' ? 'Módosítás / Újraküldés' : 'Beküldés'}
                     </Button>
                   )}
                 </div>

@@ -902,7 +902,18 @@ export default function Dashboard() {
 
           {(currentUser?.role === 'student' || currentUser?.role === 'dj') && (
             <TabsContent value="absences" className="space-y-3 sm:space-y-6">
-              <ExcusesTab attendance={attendance} expandedDates={expandedDates} setExpandedDates={setExpandedDates} />
+              <StudentExcusesTab 
+                attendance={attendance} 
+                excuses={excuses}
+                selectedAbsences={selectedAbsences}
+                setSelectedAbsences={setSelectedAbsences}
+                excuseForm={excuseForm}
+                setExcuseForm={setExcuseForm}
+                currentUser={currentUser}
+                user={user}
+                loadExcuses={loadExcuses}
+                showAlert={showAlert}
+              />
             </TabsContent>
           )}
 

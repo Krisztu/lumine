@@ -81,6 +81,78 @@ export function StudentDashboard({
         <CardHeader>
           <CardTitle className="flex items-center text-sm sm:text-lg">
             
+            <span className="text-xs sm:text-base">{userRole === 'teacher' ? 'Általam adott jegyek' : 'Legutóbbi jegyek'}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-3 sm:p-6">
+          <ResponsiveTable
+            breakpoint="md"
+            mobileComponent={
+              <MobileTable
+                data={grades.slice(0, 5)}
+                columns={[
+                  { key: 'subject', label: 'Tárgy' },
+                  ...(userRole === 'teacher' ? [
+                    { key: 'studentName', label: 'Diák' },
+                    { key: 'studentClass', label: 'Osztály' }
+                  ] : []),
+                  { 
+                    key: 'grade', 
+                    label: 'Jegy',
+                    render: (value) => (
+                      <span className={`px-2 py-1 rounded text-white text-xs ${(value || 0) >= 4 ? 'bg-green-500' :
+                        (value || 0) >= 3 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}>
+                        {value || 'N/A'}
+                      </span>
+                    )
+                  },
+                  { 
+                    key: 'date', 
+                    label: 'Dátum',
+                    render: (value) => new Date(value).toLocaleDateString('hu-HU')
+                  }
+                ]}
+                emptyMessage="Nincsenek jegyek"
+              />
+            }
+          >
+            <Table className="text-xs sm:text-sm">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Tantárgy</TableHead>
+                  {userRole === 'teacher' && <TableHead>Diák</TableHead>}
+                  {userRole === 'teacher' && <TableHead>Osztály</TableHead>}
+                  <TableHead>Jegy</TableHead>
+                  <TableHead>Dátum</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {grades.slice(0, 5).map((grade, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{grade.subject || 'N/A'}</TableCell>
+                    {userRole === 'teacher' && <TableCell>{grade.studentName || 'N/A'}</TableCell>}
+                    {userRole === 'teacher' && <TableCell>{grade.studentClass || 'N/A'}</TableCell>}
+                    <TableCell>
+                      <span className={`px-2 py-1 rounded text-white ${(grade.grade || 0) >= 4 ? 'bg-green-500' :
+                        (grade.grade || 0) >= 3 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}>
+                        {grade.grade || 'N/A'}
+                      </span>
+                    </TableCell>
+                    <TableCell>{new Date(grade.date).toLocaleDateString('hu-HU')}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </ResponsiveTable>
+        </CardContent>
+      </Card>
+
+      <Card className="border-none shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center text-sm sm:text-lg">
+            
             <span className="text-xs sm:text-base">Mai órák - {new Date().toLocaleDateString('hu-HU', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
           </CardTitle>
         </CardHeader>
@@ -149,78 +221,6 @@ export function StudentDashboard({
                     <TableCell className={lesson.status === 'free' ? 'text-gray-400' : ''}>
                       {lesson.status === 'free' ? '-' : (userRole === 'teacher' ? (lesson.Class || 'N/A') : (lesson.Teacher || 'N/A'))}
                     </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </ResponsiveTable>
-        </CardContent>
-      </Card>
-
-      <Card className="border-none shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center text-sm sm:text-lg">
-            
-            <span className="text-xs sm:text-base">{userRole === 'teacher' ? 'Általam adott jegyek' : 'Legutóbbi jegyek'}</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-3 sm:p-6">
-          <ResponsiveTable
-            breakpoint="md"
-            mobileComponent={
-              <MobileTable
-                data={grades.slice(0, 5)}
-                columns={[
-                  { key: 'subject', label: 'Tárgy' },
-                  ...(userRole === 'teacher' ? [
-                    { key: 'studentName', label: 'Diák' },
-                    { key: 'studentClass', label: 'Osztály' }
-                  ] : []),
-                  { 
-                    key: 'grade', 
-                    label: 'Jegy',
-                    render: (value) => (
-                      <span className={`px-2 py-1 rounded text-white text-xs ${(value || 0) >= 4 ? 'bg-green-500' :
-                        (value || 0) >= 3 ? 'bg-yellow-500' : 'bg-red-500'
-                        }`}>
-                        {value || 'N/A'}
-                      </span>
-                    )
-                  },
-                  { 
-                    key: 'date', 
-                    label: 'Dátum',
-                    render: (value) => new Date(value).toLocaleDateString('hu-HU')
-                  }
-                ]}
-                emptyMessage="Nincsenek jegyek"
-              />
-            }
-          >
-            <Table className="text-xs sm:text-sm">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Tantárgy</TableHead>
-                  {userRole === 'teacher' && <TableHead>Diák</TableHead>}
-                  {userRole === 'teacher' && <TableHead>Osztály</TableHead>}
-                  <TableHead>Jegy</TableHead>
-                  <TableHead>Dátum</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {grades.slice(0, 5).map((grade, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{grade.subject || 'N/A'}</TableCell>
-                    {userRole === 'teacher' && <TableCell>{grade.studentName || 'N/A'}</TableCell>}
-                    {userRole === 'teacher' && <TableCell>{grade.studentClass || 'N/A'}</TableCell>}
-                    <TableCell>
-                      <span className={`px-2 py-1 rounded text-white ${(grade.grade || 0) >= 4 ? 'bg-green-500' :
-                        (grade.grade || 0) >= 3 ? 'bg-yellow-500' : 'bg-red-500'
-                        }`}>
-                        {grade.grade || 'N/A'}
-                      </span>
-                    </TableCell>
-                    <TableCell>{new Date(grade.date).toLocaleDateString('hu-HU')}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
