@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Clean Light Theme */
+    --background: 140 20% 97%;
+    --foreground: 150 40% 6%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 150 40% 6%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 40% 6%;
+ 
+    --primary: 142 71% 45%;
+    --primary-foreground: 0 0% 100%;
+ 
+    --secondary: 150 10% 94%;
+    --secondary-foreground: 150 30% 12%;
+ 
+    --muted: 150 10% 94%;
+    --muted-foreground: 150 9% 46%;
+ 
+    --accent: 142 40% 94%;
+    --accent-foreground: 142 71% 30%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 150 10% 90%;
+    --input: 150 10% 90%;
+    --ring: 142 71% 45%;
+ 
+    --radius: 0.75rem;
+    --font-sans: 'Outfit', 'Inter', sans-serif;
+  }
+ 
+  .dark {
+    /* Deep Forest Dark Theme */
+    --background: 155 25% 5%;
+    --foreground: 140 15% 93%;
+ 
+    --card: 155 20% 8%;
+    --card-foreground: 140 15% 93%;
+ 
+    --popover: 155 20% 8%;
+    --popover-foreground: 140 15% 93%;
+ 
+    --primary: 142 71% 45%;
+    --primary-foreground: 0 0% 100%;
+ 
+    --secondary: 155 15% 13%;
+    --secondary-foreground: 140 15% 93%;
+ 
+    --muted: 155 15% 13%;
+    --muted-foreground: 150 8% 50%;
+ 
+    --accent: 155 15% 13%;
+    --accent-foreground: 140 15% 93%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+ 
+    --border: 155 15% 14%;
+    --input: 155 15% 14%;
+    --ring: 142 71% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Light Mode Background */
+  body {
+    background-color: hsl(var(--background));
+  }
+
+  /* Dark Mode Background */
+  .dark body {
+    background-color: hsl(var(--background));
+  }
+}
+
+/* Simple Utilities */
+@layer utilities {
+  .glass {
+    @apply bg-card border border-border shadow-sm;
+  }
+  
+  .glass-card {
+    @apply bg-card border border-border shadow-sm rounded-xl transition-all duration-200 hover:shadow-md;
+  }
+
+  .glass-panel {
+    @apply bg-card border border-border shadow-sm rounded-xl;
+  }
+
+  .glass-input {
+    @apply bg-background border border-border focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all duration-200;
+  }
+
+  .glass-button {
+    @apply bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all duration-200;
+  }
+  
+  .text-gradient {
+    @apply text-emerald-600 dark:text-emerald-400;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-emerald-500/40;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.2s ease;
+}
+
+/* Hide scrollbar for mobile tabs */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .glass-card {
+    @apply rounded-lg;
+  }
+  
+  button, input, select, textarea {
+    min-height: 44px;
+  }
+  
+  input, select, textarea {
+    font-size: 16px;
+  }
+  
+  .break-words {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  .table-container {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .modal-content {
+    max-height: 85vh;
+    margin: 1rem;
+  }
+}
