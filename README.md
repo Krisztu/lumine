@@ -99,13 +99,6 @@ http://localhost:3000
 npm run dev          # Fejlesztői szerver indítása
 ```
 
-### Tesztelés
-
-```bash
-npm test             # Unit tesztek futtatása
-npm run test:e2e     # End-to-end tesztek futtatása
-```
-
 ### Adatbázis
 
 ```bash
@@ -192,24 +185,8 @@ npm run test:e2e
 - TypeScript: Típusbiztonság kötelező
 - Conventional Commits: Commit üzenet formátum
 
-### Tesztelési követelmények
-
-- Minden új funkció unit tesztekkel
-- Kritikus folyamatok E2E tesztekkel
-- Minimum 80% kód lefedettség
-- Minden teszt sikeres futása
-
-
-### Felhasznált technológiák
-
-- Next.js - React framework
-- Firebase - Backend szolgáltatások
-- Tailwind CSS - CSS framework
-- Radix UI - UI komponensek
-- Vercel - Hosting platform
-
 ---
 
 Készítette Gaál Levente, Kőszegi Bence, Kurtucz F. Krisztián
 
-Demo: https://lumine-app.vercel.app
+Demo: https://lumine-project.vercel.app/
