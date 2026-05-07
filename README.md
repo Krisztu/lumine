@@ -55,17 +55,19 @@ cp .env.example .env
 # Vagy használja a demo konfigurációt mellekelt .env fájlt 
 ```
 
-4. Teszt adatbázis inicializálása
+4. Fejlesztői szerver indítása
+
+```bash
+npm run dev   # http://localhost:3000
+```
+
+5. Teszt adatbázis inicializálása
 
 ```bash
 npm run db:init
 ```
 
-5. Fejlesztői szerver indítása
-
-```bash
-npm run dev
-```
+**Fontos:** Futnia kell a fejlesztői szervernek, anélkül nem képes inicializálni az adatokat
 
 6. Böngészőben megnyitás
 
