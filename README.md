@@ -22,15 +22,6 @@ Modern, webalapú iskolai adminisztrációs rendszer, amely hatékonyan támogat
 - **Hiányzáskezelés**: Hiányzások rögzítése, igazolások
 - **Kommunikáció**: Valós idejű chat, üzenetek, értesítések
 
-### Technikai jellemzők
-
-- **Responsive design**: Minden eszközön optimális megjelenés
-- **Real-time frissítések**: Azonnali adatszinkronizáció
-- **Offline támogatás**: Service Worker cache
-- **Akadálymentesség**: WCAG 2.1 AA megfelelőség
-- **Biztonság**: Firebase Auth + szerepkör alapú hozzáférés
-
-## Gyors kezdés
 
 ### Előfeltételek
 
@@ -44,8 +35,8 @@ Modern, webalapú iskolai adminisztrációs rendszer, amely hatékonyan támogat
 1. Repository klónozása
 
 ```bash
-git clone https://github.com/your-username/lumine-app.git
-cd lumine-app
+git clone https://git.gszi.edu.hu/vizsgaremek2526/vremek_13C_02.git
+cd lumine
 ```
 
 2. Függőségek telepítése
@@ -61,7 +52,7 @@ npm install
 cp .env.example .env
 
 # Szerkessze a .env fájlt saját Firebase adataival
-# Vagy használja a demo konfigurációt
+# Vagy használja a demo konfigurációt mellekelt .env fájlt 
 ```
 
 4. Teszt adatbázis inicializálása
@@ -121,40 +112,6 @@ npm run test:e2e     # End-to-end tesztek futtatása
 npm run db:init      # Teszt adatbázis létrehozása
 ```
 
-## Projekt struktúra
-
-```
-lumine-app/
-├── docs/                    # Dokumentáció
-├── e2e/                     # End-to-end tesztek
-├── public/                  # Statikus fájlok
-├── scripts/                 # Adatbázis scriptek
-│   ├── package.json
-│   └── test-adatbazis.js   # Teszt adatok generálása
-├── src/
-│   ├── app/                # Next.js App Router
-│   │   ├── api/           # API endpoints
-│   │   ├── dashboard/     # Dashboard oldalak
-│   │   ├── globals.css    # Globális stílusok
-│   │   ├── layout.tsx     # Fő layout
-│   │   └── page.tsx       # Főoldal
-│   ├── contexts/          # React Context-ek
-│   ├── lib/               # Utility függvények
-│   ├── shared/            # Megosztott komponensek
-│   │   ├── components/    # UI komponensek
-│   │   ├── types/         # TypeScript típusok
-│   │   └── utils/         # Segédfüggvények
-│   └── tests/             # Unit tesztek
-├── .env.example           # Környezeti változók példa
-├── .env.test             # Teszt környezet
-├── next.config.js        # Next.js konfiguráció
-├── package.json          # Projekt függőségek
-├── playwright.config.ts  # E2E teszt konfiguráció
-├── tailwind.config.js    # Tailwind CSS konfiguráció
-├── tsconfig.json         # TypeScript konfiguráció
-└── vitest.config.ts      # Unit teszt konfiguráció
-```
-
 ## Tesztelés
 
 ### Unit tesztek
@@ -162,12 +119,6 @@ lumine-app/
 ```bash
 # Összes unit teszt futtatása
 npm test
-
-# Tesztek futtatása watch módban
-npm test -- --watch
-
-# Coverage jelentés generálása
-npm test -- --coverage
 ```
 
 ### End-to-End tesztek
@@ -176,18 +127,7 @@ npm test -- --coverage
 # E2E tesztek futtatása
 npm run test:e2e
 
-# Tesztek futtatása fejlesztői módban
-npx playwright test --ui
-
-# Tesztek futtatása debug módban
-npx playwright test --debug
 ```
-
-### Teszt eredmények
-
-- Unit tesztek: 15/15 sikeres (100%)
-- E2E tesztek: 28/28 sikeres (100%)
-- Kód lefedettség: 100%
 
 ## Technológiai stack
 
@@ -212,28 +152,6 @@ npx playwright test --debug
 - Playwright: E2E tesztelés
 - ESLint: Kód minőség
 - Prettier: Kód formázás
-
-## Telepítés és hosting
-
-### Vercel (ajánlott)
-
-```bash
-# Vercel CLI telepítése
-npm i -g vercel
-
-# Projekt telepítése
-vercel
-
-# Környezeti változók beállítása a Vercel dashboard-on
-```
-
-### Egyéb platformok
-
-- Netlify: Automatikus telepítés Git-ből
-- Firebase Hosting: Google Cloud integráció
-- AWS Amplify: Amazon Web Services
-
-## Biztonság
 
 ### Implementált biztonsági intézkedések
 
@@ -267,16 +185,6 @@ vercel
 - Samsung Internet
 - Firefox Mobile
 
-## Közreműködés
-
-### Fejlesztési folyamat
-
-1. Fork-olja a repository-t
-2. Hozzon létre feature branch-et (git checkout -b feature/amazing-feature)
-3. Commit-olja a változtatásokat (git commit -m 'Add amazing feature')
-4. Push-olja a branch-et (git push origin feature/amazing-feature)
-5. Nyisson Pull Request-et
-
 ### Kód stílus
 
 - ESLint: Automatikus kód ellenőrzés
@@ -291,54 +199,6 @@ vercel
 - Minimum 80% kód lefedettség
 - Minden teszt sikeres futása
 
-## Teljesítmény
-
-### Core Web Vitals
-
-- First Contentful Paint: 0.8s
-- Largest Contentful Paint: 1.4s
-- Cumulative Layout Shift: 0.05
-- First Input Delay: 12ms
-
-### Bundle méret
-
-- JavaScript: 2.1MB (gzipped: 580KB)
-- CSS: 45KB (gzipped: 8KB)
-- Images: Optimalizált WebP/AVIF formátum
-
-## Hibabejelentés
-
-### GitHub Issues
-
-Használja a GitHub Issues-t hibabejelentéshez:
-
-1. Ellenőrizze, hogy a hiba még nincs bejelentve
-2. Használja a megfelelő issue template-et
-3. Adjon meg részletes leírást és reprodukálási lépéseket
-4. Csatoljon képernyőképeket, ha szükséges
-
-### Támogatás
-
-- Email: support@lumine.edu.hu
-- Dokumentáció: docs/
-
-## Dokumentáció
-
-A részletes dokumentáció a `docs/` mappában található:
-
-- 01_bevezeto.md: Bevezető és probléma ismertetése
-- 02_temavalasztas.md: Témaválasztás indoklása
-- 03_fejlesztoi_dok_1.md: Követelmények és rendszerterv
-- 03_fejlesztoi_dok_2.md: Adatbázis és API dokumentáció
-- 03_fejlesztoi_dok_3.md: Biztonság, tesztelés, telepítés
-- 04_felhasznaloi_dok.md: Felhasználói útmutató
-- 05_osszegzes_irodalom.md: Összegzés és irodalomjegyzék
-
-## Licenc
-
-Ez a projekt MIT licenc alatt áll. Részletek a LICENSE fájlban.
-
-## Köszönetnyilvánítás
 
 ### Felhasznált technológiák
 
@@ -348,14 +208,8 @@ Ez a projekt MIT licenc alatt áll. Részletek a LICENSE fájlban.
 - Radix UI - UI komponensek
 - Vercel - Hosting platform
 
-### Közreműködők
-
-- Fejlesztő: Teljes stack fejlesztés
-- UI/UX Design: Felhasználói élmény tervezés
-- Tesztelés: Minőségbiztosítás
-
 ---
 
-Készítette szeretettel az oktatás digitalizációjáért
+Készítette Gaál Levente, Kőszegi Bence, Kurtucz F. Krisztián
 
-Demo: https://lumine-app.vercel.app | Dokumentáció: ./docs/ | Issues: https://github.com/your-username/lumine-app/issues
+Demo: https://lumine-app.vercel.app

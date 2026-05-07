@@ -2,23 +2,23 @@ const admin = require('firebase-admin');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 
-// Environment változók betöltése
+// be kell tolteni a .env fajlt hogy mukodjon
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
-// Firebase Admin inicializálás
+// firebase admin inicializalas, csak egyszer fusson le
 if (!admin.apps.length) {
   const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || process.env.FIREBASE_ADMIN_PROJECT_ID || 'demo-project';
   const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL || 'demo@demo.com';
   const privateKey = (process.env.FIREBASE_ADMIN_PRIVATE_KEY || '').replace(/\\n/g, '\n');
   
-  console.log(`🔧 Firebase konfiguráció:`);
+  console.log(`Firebase konfig amit hasznalunk:`);
   console.log(`   Project ID: ${projectId}`);
   console.log(`   Client Email: ${clientEmail}`);
-  console.log(`   Private Key: ${privateKey ? 'Beállítva' : 'Hiányzik'}`);
+  console.log(`   Private Key: ${privateKey ? 'Beallitva' : 'Hianzik'}`);
   
   if (!projectId || !clientEmail || !privateKey) {
-    console.error('❌ Hiányzó Firebase Admin konfigurációs adatok!');
-    console.error('Ellenőrizd a .env fájlban a következő változókat:');
+    console.error('Hianyzo Firebase Admin konfiguracios adatok!');
+    console.error('Ellenorizd a .env fajlban a kovetkezo valtozokat:');
     console.error('- NEXT_PUBLIC_FIREBASE_PROJECT_ID vagy FIREBASE_ADMIN_PROJECT_ID');
     console.error('- FIREBASE_ADMIN_CLIENT_EMAIL');
     console.error('- FIREBASE_ADMIN_PRIVATE_KEY');
@@ -34,13 +34,13 @@ if (!admin.apps.length) {
     databaseURL: process.env.FIREBASE_DATABASE_URL
   });
   
-  console.log(`✅ Firebase Admin SDK inicializálva: ${projectId}`);
+  console.log(`Firebase Admin SDK inicializalva: ${projectId}`);
 }
 
 const db = admin.firestore();
 const auth = admin.auth();
 
-// Időpontok definiálása
+// ezek az orak amikben lehet ora
 const TIME_SLOTS = ['7:45', '8:45', '9:45', '10:45', '11:45', '12:45', '13:45', '14:45'];
 const DAYS = ['Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek'];
 const SUBJECTS = [
@@ -65,7 +65,7 @@ const SUBJECTS = [
     'Osztályfőnöki'
 ];
 
-// Segédfüggvény API hívásokhoz retry logikával
+
 async function apiCall(url, data, retries = 3) {
   for (let i = 0; i < retries; i++) {
     try {
@@ -85,16 +85,16 @@ async function apiCall(url, data, retries = 3) {
         throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
     } catch (error) {
-      console.warn(`⚠️ API hívás sikertelen (${i + 1}/${retries}): ${error.message}`);
+      console.warn(`API hivas sikertelen (${i + 1}/${retries}): ${error.message}`);
       if (i === retries - 1) throw error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); // Exponenciális várakozás
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); 
     }
   }
 }
 
-// Felhasználók adatai
+// teszt felhasznalok adatai
 const USERS_DATA = {
-  // 1 Admin
+  // admin fiok
   admin: {
     name: 'Admin1',
     email: 'admin1@lumine.edu.hu',
@@ -104,7 +104,7 @@ const USERS_DATA = {
     address: '5600 Békéscsaba, Andrássy út 15.'
   },
   
-  // 1 Igazgató
+  // igazgato fiok
   principal: {
     name: 'Igazgato1',
     email: 'igazgato1@lumine.edu.hu',
@@ -114,7 +114,7 @@ const USERS_DATA = {
     address: '5600 Békéscsaba, Szent István tér 10.'
   },
   
-  // 2 Osztályfőnök
+  // ket osztalyfonok, mindket osztalyhoz egy
   homeroom_teachers: [
     {
       name: 'Osztalyfonok1',
@@ -138,7 +138,7 @@ const USERS_DATA = {
     }
   ],
   
-  // 6 Tanár (hogy minden tantárgyat le tudjunk fedni)
+  // tanarok, annyit csinalunk amennyivel le tudjuk fedni az osszes tantargyat
   teachers: [
     {
       name: 'Tanar1',
@@ -187,7 +187,7 @@ const USERS_DATA = {
     }
   ],
   
-  // 2 Osztály diákjai (8-8 diák = 16 diák)
+  // diakok, mindket osztalyba 8-8 fo
   students: {
     '9.A': [
       { name: 'Diak1', email: 'diak1@lumine.edu.hu', password: 'diak123456', studentId: '70123456789', phone: '+36 70 123 4567', address: '5600 Békéscsaba, Arany János utca 30.' },
@@ -211,7 +211,7 @@ const USERS_DATA = {
     ]
   },
   
-  // Szülők (minden diákhoz 1 szülő - OM azonosító alapján kapcsolódnak)
+  // minden diakhoz egy szulo, az om azonosito alapjan kapcsolodnak
   parents: [
     { name: 'Szulo1', email: 'szulo1@lumine.edu.hu', password: 'szulo123456', childStudentId: '70123456789', phone: '+36 20 123 4567', address: '5600 Békéscsaba, Arany János utca 30.' },
     { name: 'Szulo2', email: 'szulo2@lumine.edu.hu', password: 'szulo123456', childStudentId: '70123456790', phone: '+36 20 234 5678', address: '5600 Békéscsaba, Munkácsy Mihály utca 16.' },
@@ -232,7 +232,7 @@ const USERS_DATA = {
   ]
 };
 
-// Fix órarend definiálása
+// itt van az egesz heti orarend rogzitve
 const FIXED_SCHEDULE = {
   '9.A': {
     'Hétfő': [
@@ -318,11 +318,11 @@ const FIXED_SCHEDULE = {
   }
 };
 
-// Órarend generálás logika - fix órarend használata
+// vegigmegyunk a fix orarenden es listaba rakjuk az oraakat
 function generateSchedule() {
   const schedule = [];
   
-  // Fix órarend feldolgozása
+  // bejarjuk az osszes osztaly osszes napjat
   Object.entries(FIXED_SCHEDULE).forEach(([className, weekSchedule]) => {
     Object.entries(weekSchedule).forEach(([day, daySchedule]) => {
       daySchedule.forEach(lesson => {
@@ -342,13 +342,13 @@ function generateSchedule() {
   return schedule;
 }
 
-// Felhasználók létrehozása az admin API-n keresztül
+// letrehozzuk az osszes felhasznalot, eloszor az admint direktbe, a tobbit az api-n at
 async function createUsers() {
-  console.log('Felhasználók létrehozása az admin API-n keresztül...');
+  console.log('Felhasznalok letrehozasa...');
   const createdUsers = [];
   
   try {
-    // Admin létrehozása Firebase Auth-ban
+    // az admint kozvetlenul rakjuk be, mert o kell ahhoz hogy a tobbiek menjenek
     const adminUser = await auth.createUser({
       email: USERS_DATA.admin.email,
       password: USERS_DATA.admin.password,
@@ -366,17 +366,17 @@ async function createUsers() {
     });
     
     createdUsers.push({ uid: adminUser.uid, ...USERS_DATA.admin });
-    console.log(`✓ Admin létrehozva: ${USERS_DATA.admin.name}`);
+    console.log(`Admin letrehozva: ${USERS_DATA.admin.name}`);
     
-    // Admin API használata a többi felhasználóhoz
+    // a tobbi felhasznalot mar az api-n keresztul regisztraljuk
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    console.log(`🌐 API URL: ${baseUrl}`);
+    console.log(`API URL: ${baseUrl}`);
     
-    // Kis várakozás, hogy a szerver biztosan elinduljon
-    console.log('⏳ Várakozás a szerver indítására...');
+    // varunk egy kicsit hogy a szerver biztosan elinduljon mire hivjuk
+    console.log('Varunk hogy a szerver elinduljon...');
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Igazgató regisztrálása
+    // igazgato
     try {
       await apiCall(`${baseUrl}/api/auth/register`, {
         email: USERS_DATA.principal.email,
@@ -386,12 +386,12 @@ async function createUsers() {
         phone: USERS_DATA.principal.phone,
         address: USERS_DATA.principal.address
       });
-      console.log(`✓ Igazgató regisztrálva: ${USERS_DATA.principal.name}`);
+      console.log(`Igazgato regisztralva: ${USERS_DATA.principal.name}`);
     } catch (error) {
-      console.error(`✗ Igazgató regisztrálása sikertelen: ${error.message}`);
+      console.error(`Igazgato regisztralasa sikertelen: ${error.message}`);
     }
     
-    // Osztályfőnökök regisztrálása
+    // osztalyfonokokat egyenkent regisztraljuk
     for (const teacher of USERS_DATA.homeroom_teachers) {
       try {
         await apiCall(`${baseUrl}/api/auth/register`, {
@@ -404,13 +404,13 @@ async function createUsers() {
           phone: teacher.phone,
           address: teacher.address
         });
-        console.log(`✓ Osztályfőnök regisztrálva: ${teacher.name} (${teacher.class})`);
+        console.log(`Osztalyfonok regisztralva: ${teacher.name} (${teacher.class})`);
       } catch (error) {
-        console.error(`✗ Osztályfőnök regisztrálása sikertelen (${teacher.name}): ${error.message}`);
+        console.error(`Osztalyfonok regisztralasa sikertelen (${teacher.name}): ${error.message}`);
       }
     }
     
-    // Tanárok regisztrálása
+    // tanarok
     for (const teacher of USERS_DATA.teachers) {
       try {
         await apiCall(`${baseUrl}/api/auth/register`, {
@@ -422,13 +422,13 @@ async function createUsers() {
           phone: teacher.phone,
           address: teacher.address
         });
-        console.log(`✓ Tanár regisztrálva: ${teacher.name}`);
+        console.log(`Tanar regisztralva: ${teacher.name}`);
       } catch (error) {
-        console.error(`✗ Tanár regisztrálása sikertelen (${teacher.name}): ${error.message}`);
+        console.error(`Tanar regisztralasa sikertelen (${teacher.name}): ${error.message}`);
       }
     }
     
-    // Diákok regisztrálása
+    // diakok, osztalyonkent megyunk vegig
     for (const [className, students] of Object.entries(USERS_DATA.students)) {
       for (const student of students) {
         try {
@@ -442,14 +442,14 @@ async function createUsers() {
             phone: student.phone,
             address: student.address
           });
-          console.log(`✓ ${student.role === 'dj' ? 'DJ' : 'Diák'} regisztrálva: ${student.name} (${className})`);
+          console.log(`${student.role === 'dj' ? 'DJ' : 'Diak'} regisztralva: ${student.name} (${className})`);
         } catch (error) {
-          console.error(`✗ ${student.role === 'dj' ? 'DJ' : 'Diák'} regisztrálása sikertelen (${student.name}): ${error.message}`);
+          console.error(`${student.role === 'dj' ? 'DJ' : 'Diak'} regisztralasa sikertelen (${student.name}): ${error.message}`);
         }
       }
     }
     
-    // Szülők regisztrálása
+    // szulok
     for (const parent of USERS_DATA.parents) {
       try {
         await apiCall(`${baseUrl}/api/auth/register`, {
@@ -461,23 +461,23 @@ async function createUsers() {
           phone: parent.phone,
           address: parent.address
         });
-        console.log(`✓ Szülő regisztrálva: ${parent.name}`);
+        console.log(`Szulo regisztralva: ${parent.name}`);
       } catch (error) {
-        console.error(`✗ Szülő regisztrálása sikertelen (${parent.name}): ${error.message}`);
+        console.error(`Szulo regisztralasa sikertelen (${parent.name}): ${error.message}`);
       }
     }
     
     return createdUsers;
     
   } catch (error) {
-    console.error('Hiba a felhasználók létrehozásakor:', error);
+    console.error('Hiba a felhasznalok letrehozasakor:', error);
     throw error;
   }
 }
 
-// Osztályok létrehozása
+// letrehozzuk a ket osztalyt a firestoreban
 async function createClasses() {
-  console.log('Osztályok létrehozása...');
+  console.log('Osztalyok letrehozasa...');
   
   try {
     const classes = ['9.A', '9.B'];
@@ -488,16 +488,16 @@ async function createClasses() {
         createdAt: new Date().toISOString()
       });
       
-      console.log(`✓ Osztály létrehozva: ${className}`);
+      console.log(`Osztaly letrehozva: ${className}`);
     }
     
   } catch (error) {
-    console.error('Hiba az osztályok létrehozásakor:', error);
+    console.error('Hiba az osztalyok letrehozasakor:', error);
     throw error;
   }
 }
 async function createParentChildRelations(users) {
-  console.log('Szülő-gyermek kapcsolatok létrehozása...');
+  console.log('Szulo-gyermek kapcsolatok letrehozasa...');
   
   try {
     for (const parent of USERS_DATA.parents) {
@@ -516,42 +516,42 @@ async function createParentChildRelations(users) {
           verified: true
         });
         
-        console.log(`✓ Kapcsolat létrehozva: ${parent.name} -> ${childUser.name}`);
+        console.log(`Kapcsolat letrehozva: ${parent.name} -> ${childUser.name}`);
       }
     }
   } catch (error) {
-    console.error('Hiba a szülő-gyermek kapcsolatok létrehozásakor:', error);
+    console.error('Hiba a szulo-gyermek kapcsolatok letrehozasakor:', error);
     throw error;
   }
 }
 
-// Órarend létrehozása közvetlenül Firestore-ba
+// az orarendet kozvetlenul a firestoreba irjuk, minden erintett felhasznalohoz
 async function createSchedule() {
-  console.log('Órarend létrehozása közvetlenül Firestore-ba...');
+  console.log('Orarend letrehozasa...');
   
   try {
     const schedule = generateSchedule();
     
-    // Felhasználók lekérése
+    // lekerjuk az osszes felhasznalot hogy megtalaljuk a tanarokat es diakokat
     const usersSnapshot = await db.collection('users').get();
     const allUsers = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     
     for (const lesson of schedule) {
       try {
-        // Tanár megkeresése
+        // megkeressuk melyik tanar tartja az orat
         const teacher = allUsers.find(user => (user.fullName || user.name) === lesson.Teacher);
         
-        // Osztály diákjainak megkeresése
+        // megkeressuk az osztaly diakjait
         const classStudents = allUsers.filter(user => 
           (user.role === 'student' || user.role === 'dj') && user.class === lesson.Class
         );
         
-        // Érintett felhasználók (tanár + diákok)
+        // osszegyujtjuk a tanart es a diakokat
         const affectedUsers = [];
         if (teacher) affectedUsers.push(teacher);
         affectedUsers.push(...classStudents);
         
-        // Minden érintett felhasználóhoz létrehozzuk az órát
+        // mindenki kap egy bejegyzest ebbol az orabol
         for (const user of affectedUsers) {
           await db.collection('lessons').add({
             day: lesson.Day,
@@ -566,15 +566,15 @@ async function createSchedule() {
           });
         }
         
-        console.log(`✓ Óra létrehozva: ${lesson.Class} - ${lesson.Day} ${lesson.StartTime} ${lesson.Subject} (${affectedUsers.length} felhasználónak)`);
+        console.log(`Ora letrehozva: ${lesson.Class} - ${lesson.Day} ${lesson.StartTime} ${lesson.Subject} (${affectedUsers.length} felhasznalonak)`);
       } catch (lessonError) {
-        console.error(`Hiba az óra létrehozásakor: ${lesson.Class} - ${lesson.Day} ${lesson.StartTime} - ${lessonError.message}`);
+        console.error(`Hiba az ora letrehozasakor: ${lesson.Class} - ${lesson.Day} ${lesson.StartTime} - ${lessonError.message}`);
       }
     }
     
-    console.log(`✓ ${schedule.length} óra feldolgozva az órarendben (minden érintett felhasználónak)`);
+    console.log(`${schedule.length} ora feldolgozva az orarendben (minden erintett felhasznalonak)`);
     
-    // Órarend összesítő
+    // kiirjuk mennyi ora lett letrehozva osztalyonkent
     const classSummary = {};
     schedule.forEach(lesson => {
       if (!classSummary[lesson.Class]) {
@@ -586,15 +586,15 @@ async function createSchedule() {
       classSummary[lesson.Class][lesson.Day]++;
     });
     
-    console.log('Fix órarend összesítő:');
+    console.log('Fix orarend osszesito:');
     Object.entries(classSummary).forEach(([className, days]) => {
       console.log(`  ${className}:`);
       Object.entries(days).forEach(([day, count]) => {
-        console.log(`    ${day}: ${count} óra`);
+        console.log(`    ${day}: ${count} ora`);
       });
     });
     
-    // Tantárgyak összesítése
+    // meg azt is kiirjuk hogy tantargyankent mennyi ora van hetente
     const subjectCount = {};
     schedule.forEach(lesson => {
       if (!subjectCount[lesson.Subject]) {
@@ -603,37 +603,37 @@ async function createSchedule() {
       subjectCount[lesson.Subject]++;
     });
     
-    console.log('\nTantárgyak heti óraszáma:');
+    console.log('\nTantargyak heti oraszama:');
     Object.entries(subjectCount).sort((a, b) => b[1] - a[1]).forEach(([subject, count]) => {
-      console.log(`  ${subject}: ${count} óra`);
+      console.log(`  ${subject}: ${count} ora`);
     });
     
   } catch (error) {
-    console.error('Hiba az órarend létrehozásakor:', error);
+    console.error('Hiba az orarend letrehozasakor:', error);
     throw error;
   }
 }
 
-// Adatbázis tisztítása
+// letoroljuk az egesz adatbazist mielott ujra feltoltjuk
 async function clearDatabase() {
-  console.log('Adatbázis tisztítása...');
+  console.log('Adatbazis torlese...');
   
   try {
-    // Firebase Auth felhasználók törlése
+    // eloszor az auth felhasznalokat toroljuk
     try {
       const listUsersResult = await auth.listUsers();
       if (listUsersResult.users.length > 0) {
         const deletePromises = listUsersResult.users.map(user => auth.deleteUser(user.uid));
         await Promise.all(deletePromises);
-        console.log(`✓ ${listUsersResult.users.length} Auth felhasználó törölve`);
+        console.log(`${listUsersResult.users.length} Auth felhasznalo torolve`);
       } else {
-        console.log('✓ Nincsenek Auth felhasználók törölni való');
+        console.log('Nincsenek Auth felhasznalok torolni valo');
       }
     } catch (authError) {
-      console.log('⚠️ Auth felhasználók törlése hiba (ez normális lehet új adatbázisnál):', authError.message);
+      console.log('Auth felhasznalok torlese hiba (ez normalis lehet uj adatbazisnal):', authError.message);
     }
     
-    // Firestore kollekciók törlése
+    // majd az osszes firestore kollekciot
     const collections = [
       'users', 'classes', 'lessons', 'parent-child', 'grades', 'homework', 'attendance', 'behavior_records', 'chat_messages',
       'absences', 'access', 'chatMessages', 'excuses', 'homework-submissions', 'musicRequests', 'parent_children', 'schedule-changes'
@@ -650,75 +650,75 @@ async function clearDatabase() {
         
         if (snapshot.docs.length > 0) {
           await batch.commit();
-          console.log(`✓ ${snapshot.docs.length} dokumentum törölve a ${collectionName} kollekcióból`);
+          console.log(`${snapshot.docs.length} dokumentum torolve a ${collectionName} kollekciobol`);
         } else {
-          console.log(`✓ Nincs dokumentum a ${collectionName} kollekcióban`);
+          console.log(`Nincs dokumentum a ${collectionName} kollekcioban`);
         }
       } catch (collectionError) {
-        console.log(`⚠️ Hiba a ${collectionName} kollekció törlésekor:`, collectionError.message);
+        console.log(`Hiba a ${collectionName} kollekcio torlesekor:`, collectionError.message);
       }
     }
     
   } catch (error) {
-    console.error('Hiba az adatbázis tisztításakor:', error);
-    // Ne dobjunk hibát, folytassuk az inicializálást
+    console.error('Hiba az adatbazis tisztitasakor:', error);
+    // ne dobjunk hibat, folytassuk az inicializalast
   }
 }
 
-// Fő függvény
+// ez fut le amikor elindítjuk a scriptet
 async function main() {
   try {
-    console.log('🚀 Teszt adatbázis inicializálása kezdődik...\n');
+    console.log('Teszt adatbazis inicializalasa...');
     
-    // Adatbázis tisztítása
+    // eloszor tiszta lappal kezdunk
     await clearDatabase();
     console.log('');
     
-    // Osztályok létrehozása
+    // letrehozzuk az osztalyokat
     await createClasses();
     console.log('');
     
-    // Felhasználók létrehozása
+    // letrehozzuk az osszes felhasznalot
     const users = await createUsers();
     console.log('');
     
-    // Szülő-gyermek kapcsolatok
+    // osszekapcsoljuk a szulokat a gyerekeikkel
     await createParentChildRelations(users);
     console.log('');
     
-    // Órarend létrehozása
+    // feltoltjuk az orarendet
     await createSchedule();
     console.log('');
     
-    console.log('✅ Teszt adatbázis sikeresen inicializálva!');
-    console.log('\n📊 Létrehozott adatok összesítése:');
-    console.log(`   • 2 Osztály (9.A, 9.B)`);
-    console.log(`   • 1 Admin`);
-    console.log(`   • 1 Igazgató`);
-    console.log(`   • 2 Osztályfőnök (9.A, 9.B)`);
-    console.log(`   • 5 Tanár`);
-    console.log(`   • 15 Diák + 1 DJ`);
-    console.log(`   • 16 Szülő`);
-    console.log(`   • 2 Osztály fix órarendje (5-6 óra/nap, 5 nap)`);
-    console.log(`   • Minden felhasználónak van telefonszáma és Békés megyei címe`);
-    console.log('\n🔑 Bejelentkezési adatok:');
+    console.log('Teszt adatbazis sikeresen inicializalva!');
+    console.log('\nLetrehozott adatok osszesitese:');
+    console.log(`   - 2 Osztaly (9.A, 9.B)`);
+    console.log(`   - 1 Admin`);
+    console.log(`   - 1 Igazgato`);
+    console.log(`   - 2 Osztalyfonok (9.A, 9.B)`);
+    console.log(`   - 5 Tanar`);
+    console.log(`   - 15 Diak + 1 DJ`);
+    console.log(`   - 16 Szulo`);
+    console.log(`   - 2 Osztaly fix orarendje (5-6 ora/nap, 5 nap)`);
+    console.log(`   - Minden felhasznalonak van telefonszama es Bekes megyei cime`);
+    console.log('\nBejelentkezesi adatok:');
     console.log('   Email: [szerepkor][szam]@lumine.edu.hu');
     console.log('   Jelszó: [szerepkor]123456');
-    console.log('   Példa: admin1@lumine.edu.hu / admin123456');
+    console.log('   Pelda: admin1@lumine.edu.hu / admin123456');
     
   } catch (error) {
-    console.error('❌ Hiba történt:', error);
+    console.error('Hiba tortent:', error);
     process.exit(1);
   }
 }
 
-// Script futtatása
+// ha kozvetlenul futtatjak a scriptet (nem importaljak)
 if (require.main === module) {
   main().then(() => {
-    console.log('\n🎉 Script befejezve!');
+    console.log('\nScript befejezve.');
     process.exit(0);
   }).catch(error => {
-    console.error('❌ Script hiba:', error);
+    console.error('Script hiba:', error);
     process.exit(1);
   });
 }
