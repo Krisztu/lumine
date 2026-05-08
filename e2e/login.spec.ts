@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Luminé App Tesztek', () => {
-  // Bejelentkezési tesztek
+  // bejelentkezesi tesztek
   test('bejelentkezési oldal betöltődik', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
@@ -47,7 +47,7 @@ test.describe('Luminé App Tesztek', () => {
     expect(page.url()).not.toContain('/dashboard')
   })
 
-  // Dashboard funkciók
+  // dashboard funkciok
   test('admin dashboard tartalom', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
@@ -78,7 +78,7 @@ test.describe('Luminé App Tesztek', () => {
     expect(bodyContent).toBeTruthy()
   })
 
-  // Tab funkciók (ha vannak)
+  // tab funkciok (ha vannak)
   test('dashboard tab-ok ellenőrzése', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
@@ -90,27 +90,27 @@ test.describe('Luminé App Tesztek', () => {
     await page.waitForURL('**/dashboard', { timeout: 15000 })
     await page.waitForLoadState('networkidle')
     
-    // Ellenőrizzük hogy vannak-e tab-ok
+    // ellenorizzuk hogy vannak-e tab-ok
     const tabCount = await page.locator('button[role="tab"]').count()
     if (tabCount > 0) {
       expect(tabCount).toBeGreaterThan(0)
     } else {
-      // Ha nincsenek tab-ok, az is rendben van
+      // ha nincsenek tab-ok, az is rendben van
       expect(true).toBeTruthy()
     }
   })
 
-  // QR kód funkció
+  // qr kod funkciok
   test('QR scan oldal elérhető', async ({ page }) => {
     await page.goto('/qr-scan')
     await page.waitForLoadState('networkidle')
     
-    // Ellenőrizzük hogy az oldal betöltődött
+    // ellenorizzuk hogy az oldal betoltodott
     const bodyContent = await page.locator('body').textContent()
     expect(bodyContent).toBeTruthy()
   })
 
-  // Form validáció
+  // form validacio
   test('üres email validáció', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
@@ -133,7 +133,7 @@ test.describe('Luminé App Tesztek', () => {
     expect(page.url()).not.toContain('/dashboard')
   })
 
-  // UI elemek
+  // ui elemek
   test('email mező típusa', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
@@ -159,7 +159,7 @@ test.describe('Luminé App Tesztek', () => {
     await expect(submitButton).toHaveAttribute('type', 'submit')
   })
 
-  // Oldal metaadatok
+  // oldal metaadatok
   test('oldal címe', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
@@ -168,7 +168,7 @@ test.describe('Luminé App Tesztek', () => {
     expect(title).toBeTruthy()
   })
 
-  // Reszponzivitás
+  // reszponzivitas
   test('mobil nézet', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 })
     await page.goto('/')
@@ -179,12 +179,12 @@ test.describe('Luminé App Tesztek', () => {
     await expect(page.locator('button[type="submit"]')).toBeVisible()
   })
 
-  // Sötét/világos mód
+  // sotet/vilagos mod
   test('téma váltó gomb', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
     
-    // Keresünk téma váltó gombot
+    // keresunk tema valto gombot
     const themeButton = page.locator('button').filter({ hasText: /sun|moon/i }).or(
       page.locator('[data-testid="theme-toggle"]')
     )
@@ -192,12 +192,12 @@ test.describe('Luminé App Tesztek', () => {
     if (await themeButton.count() > 0) {
       await expect(themeButton.first()).toBeVisible()
     } else {
-      // Ha nincs téma váltó, az is rendben van
+      // ha nincs tema valto, az is rendben van
       expect(true).toBeTruthy()
     }
   })
 
-  // Tablet nézet
+  // tablet nezet
   test('tablet nézet', async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 })
     await page.goto('/')
@@ -208,23 +208,23 @@ test.describe('Luminé App Tesztek', () => {
     await expect(page.locator('button[type="submit"]')).toBeVisible()
   })
 
-  // Form interakció
+  // form interakcio
   test('email mező kitöltése és törlése', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
     
     const emailInput = page.locator('input[type="email"]')
     
-    // Kitöltés
+    // kitoltes
     await emailInput.fill('test@lumine.edu.hu')
     await expect(emailInput).toHaveValue('test@lumine.edu.hu')
     
-    // Törlés
+    // torles
     await emailInput.clear()
     await expect(emailInput).toHaveValue('')
   })
 
-  // Jelszó mező interakció
+  // jelszo mezo interakcio
   test('jelszó mező kitöltése', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
@@ -235,23 +235,23 @@ test.describe('Luminé App Tesztek', () => {
     await expect(passwordInput).toHaveValue('testpassword123')
   })
 
-  // Keyboard navigáció
+  // keyboard navigacio
   test('tab navigáció form mezők között', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
     
-    // Email mezőre fókusz
+    // email mezore fokusz
     await page.locator('input[type="email"]').focus()
     
-    // Tab-bal jelszó mezőre
+    // tab-bal jelszo mezore
     await page.keyboard.press('Tab')
     
-    // Ellenőrizzük hogy a jelszó mező aktív
+    // ellenorizzuk hogy a jelszo mezo aktiv
     const focusedElement = await page.evaluate(() => document.activeElement?.tagName)
     expect(focusedElement).toBe('INPUT')
   })
 
-  // Enter gomb submit
+  // enter gomb submit
   test('enter gombbal submit', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
@@ -259,14 +259,14 @@ test.describe('Luminé App Tesztek', () => {
     await page.fill('input[type="email"]', 'admin1@lumine.edu.hu')
     await page.fill('input[type="password"]', 'admin123456')
     
-    // Enter gomb a jelszó mezőben
+    // enter gomb a jelszo mezoben
     await page.locator('input[type="password"]').press('Enter')
     
     await page.waitForURL('**/dashboard', { timeout: 15000 })
     expect(page.url()).toContain('/dashboard')
   })
 
-  // Különböző képernyő méretek
+  // kulonbozo kepernyo meretek
   test('nagy képernyő nézet', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 })
     await page.goto('/')
@@ -277,7 +277,7 @@ test.describe('Luminé App Tesztek', () => {
     await expect(page.locator('button[type="submit"]')).toBeVisible()
   })
 
-  // Kis képernyő nézet
+  // kis kepernyo nezet
   test('kis képernyő nézet', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 568 })
     await page.goto('/')
@@ -288,7 +288,7 @@ test.describe('Luminé App Tesztek', () => {
     await expect(page.locator('button[type="submit"]')).toBeVisible()
   })
 
-  // Hosszú email cím
+  // hosszu email cim
   test('hosszú email cím kezelése', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
@@ -298,7 +298,7 @@ test.describe('Luminé App Tesztek', () => {
     await expect(page.locator('input[type="email"]')).toHaveValue(longEmail)
   })
 
-  // Speciális karakterek jelszóban
+  // specialis karakterek jelszaban
   test('speciális karakterek jelszóban', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
@@ -308,49 +308,49 @@ test.describe('Luminé App Tesztek', () => {
     await expect(page.locator('input[type="password"]')).toHaveValue(specialPassword)
   })
 
-  // Másolás beillesztés
+  // masolas beillesztes
   test('email másolás beillesztés', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
     
     const emailInput = page.locator('input[type="email"]')
     
-    // Kitöltés
+    // kitoltes
     await emailInput.fill('admin1@lumine.edu.hu')
     
-    // Kijelölés és másolás
+    // kijoleles es masolas
     await emailInput.selectText()
     await page.keyboard.press('Control+c')
     
-    // Törlés
+    // torles
     await emailInput.clear()
     
-    // Beillesztés
+    // beillesztes
     await emailInput.focus()
     await page.keyboard.press('Control+v')
     
     await expect(emailInput).toHaveValue('admin1@lumine.edu.hu')
   })
 
-  // Oldal újratöltés
+  // oldal ujratoltes
   test('oldal újratöltés után form üres', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
     
-    // Kitöltés
+    // kitoltes
     await page.fill('input[type="email"]', 'test@lumine.edu.hu')
     await page.fill('input[type="password"]', 'testpass')
     
-    // Újratöltés
+    // ujratoltes
     await page.reload()
     await page.waitForLoadState('networkidle')
     
-    // Ellenőrzés hogy üres
+    // ellenorzes hogy ures
     await expect(page.locator('input[type="email"]')).toHaveValue('')
     await expect(page.locator('input[type="password"]')).toHaveValue('')
   })
 
-  // Teljesítmény
+  // teljesitmeny
   test('oldal gyors betöltés', async ({ page }) => {
     const startTime = Date.now()
     
@@ -358,6 +358,6 @@ test.describe('Luminé App Tesztek', () => {
     await page.waitForLoadState('networkidle')
     
     const loadTime = Date.now() - startTime
-    expect(loadTime).toBeLessThan(10000) // 10 másodpercnél gyorsabb
+    expect(loadTime).toBeLessThan(10000) // 10 masodpercnel gyorsabb
   })
 })
