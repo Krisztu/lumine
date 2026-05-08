@@ -271,7 +271,10 @@ export function AdminScheduleTab({ allUsers, availableClasses, currentUser }: Ad
 
         const response = await fetch('/api/admin/schedule-changes', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-user-role': currentUser?.role || 'admin'
+          },
           body: JSON.stringify(changeData)
         })
 

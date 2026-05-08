@@ -107,7 +107,10 @@ export function MonthlyBehaviorTab({
     try {
       const response = await fetch('/api/behavior/monthly', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-role': currentUser?.role || 'homeroom_teacher'
+        },
         body: JSON.stringify({
           ...monthlyForm,
           studentName: student.fullName || student.name,
@@ -149,7 +152,10 @@ export function MonthlyBehaviorTab({
     try {
       const response = await fetch('/api/behavior/recognition', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-role': currentUser?.role || 'homeroom_teacher'
+        },
         body: JSON.stringify({
           ...recognitionForm,
           studentName: student.fullName || student.name,

@@ -182,7 +182,10 @@ export function TeacherGradesTab({
     try {
       const response = await fetch('/api/academic/grades', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-role': currentUser?.role || 'teacher'
+        },
         body: JSON.stringify({
           studentName: selectedStudent,
           studentClass: selectedClass,
@@ -435,7 +438,10 @@ export function TeacherGradesTab({
                                                 try {
                                                   const response = await fetch('/api/academic/grades', {
                                                     method: 'DELETE',
-                                                    headers: { 'Content-Type': 'application/json' },
+                                                    headers: {
+                                                      'Content-Type': 'application/json',
+                                                      'x-user-role': currentUser?.role || 'teacher'
+                                                    },
                                                     body: JSON.stringify({ id: grade.id })
                                                   })
                                                   if (response.ok) {

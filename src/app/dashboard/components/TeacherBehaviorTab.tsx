@@ -30,7 +30,8 @@ export function TeacherBehaviorTab({ user, allUsers, selectedClass, showAlert, c
       const response = await fetch('/api/behavior', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'x-user-role': currentUser?.role || 'teacher'
         },
         body: JSON.stringify({
           studentId: form.studentId,

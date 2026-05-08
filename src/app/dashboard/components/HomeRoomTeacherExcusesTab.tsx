@@ -24,7 +24,10 @@ export function HomeRoomTeacherExcusesTab({
     try {
       const response = await fetch('/api/communication/excuses', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-role': currentUser?.role || 'homeroom_teacher'
+        },
         body: JSON.stringify({ 
           id: excuseId, 
           status: 'approved', 
@@ -44,7 +47,10 @@ export function HomeRoomTeacherExcusesTab({
     try {
       const response = await fetch('/api/communication/excuses', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-role': currentUser?.role || 'homeroom_teacher'
+        },
         body: JSON.stringify({ 
           id: excuseId, 
           status: 'rejected', 

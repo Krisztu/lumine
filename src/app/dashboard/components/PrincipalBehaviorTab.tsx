@@ -7,11 +7,12 @@ import { Textarea } from '@/shared/components/ui/textarea'
 
 interface PrincipalBehaviorTabProps {
   allUsers: Array<{ id: string; fullName: string; name: string; class: string; role: string }>
+  currentUser?: any
   showAlert: (message: string, type?: 'success' | 'error' | 'warning' | 'info', title?: string) => void
   onSuccess?: () => void
 }
 
-export function PrincipalBehaviorTab({ allUsers, showAlert, onSuccess }: PrincipalBehaviorTabProps) {
+export function PrincipalBehaviorTab({ allUsers, currentUser, showAlert, onSuccess }: PrincipalBehaviorTabProps) {
   const [formData, setFormData] = useState({
     studentId: '',
     type: 'dicseret' as 'dicseret' | 'figyelmeztetés',
@@ -30,7 +31,10 @@ export function PrincipalBehaviorTab({ allUsers, showAlert, onSuccess }: Princip
     try {
       const response = await fetch('/api/behavior', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-role': currentUser?.role || 'principal'
+        },
         body: JSON.stringify({
           studentId: formData.studentId,
           studentName: student.fullName || student.name,
